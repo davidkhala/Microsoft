@@ -1,4 +1,5 @@
 # Microsoft Purview
-Microsoft Purview combines the former [Azure Purview](https://github.com/davidkhala/azure-utils/wiki/Data-integration-toolchain#azure-purview) and Microsoft 365 compliance solutions
+
+[MyWiki](https://github.com/davidkhala/Microsoft/wiki/Purview)
 
 [portal](https://purview.microsoft.com/)
