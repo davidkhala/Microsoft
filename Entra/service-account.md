@@ -1,7 +1,7 @@
 # System-assigned Managed Identity (SAMI)
 - SAMI works like a service account.
 
-grant access to resource
+grant access to resource such as Azure Subscription 
 1. In each resource, go the left panel `Access Control (IAM)`
 2. Click [+ Add v] above the main widget to open drop down menu. Then click [Add role assignment]
 3. Select a **Role** and click [Next]
