@@ -17,7 +17,7 @@
   > The Microsoft Entra admin is the only user who can initially create other Microsoft Entra users in SQL Database
   
   ```
-  # A good SQL runtime is **Query Editor** in Azure SQL DB db level
+  -- A good SQL runtime is **Query Editor** in Azure SQL DB db level
   CREATE USER "[SAMI name]" FROM EXTERNAL PROVIDER
   GO
 
