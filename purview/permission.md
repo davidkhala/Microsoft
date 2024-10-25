@@ -21,7 +21,10 @@
   CREATE USER "[SAMI name]" FROM EXTERNAL PROVIDER
   GO
 
-  EXEC sp_addrolemember 'db_datareader', "[SAMI name]"
+  EXEC sp_addrolemember 'db_owner', "[SAMI name]"
+  GO
+
+  CREATE MASTER KEY
   GO
   ```
 
