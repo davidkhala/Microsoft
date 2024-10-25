@@ -13,7 +13,8 @@
 [additional SQL steps](https://learn.microsoft.com/en-us/purview/register-scan-azure-sql-database?tabs=managed-identity)
 - option 1: In Azure SQL DB server level, Go to **Settings/Microsoft Entra ID** and switch current **Microsoft Entra admin** to the SAMI.
   - This is **not recommend**, but a quick workaround
-- option 2: Create SAMI as DB user in Azure SQL DB by
+- option 2: Create SAMI as DB user in Azure SQL DB by running below as **Microsoft Entra User**
+  > The Microsoft Entra admin is the only user who can initially create other Microsoft Entra users in SQL Database
   ```
   CREATE USER [SAMI name] FROM EXTERNAL PROVIDER
   GO
