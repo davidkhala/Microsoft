@@ -14,6 +14,7 @@
 ## Data Catelog: Roles and permissions
 - Data Governance Administrators
 - Governance Domain Creator
+  - It includes view access to Governance domains: ``
 - Data Health Owners
 - Data Health Readers
 
