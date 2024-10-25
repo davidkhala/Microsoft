@@ -11,4 +11,10 @@
 
 
 # Internal
-## Governance domain
+## Data Catelog: Roles and permissions
+- Data Governance Administrators
+- Governance Domain Creator
+- Data Health Owners
+- Data Health Readers
+
+
