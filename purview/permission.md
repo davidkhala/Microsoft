@@ -9,9 +9,18 @@
 - As soon as the Microsoft Purview Account is created, a system-assigned managed identity (SAMI) is created automatically in Microsoft Entra tenant.
 - You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
 
-Exception case
-- Azure SQL DB: 
+### Exception: Azure SQL DB
+[additional SQL steps](https://learn.microsoft.com/en-us/purview/register-scan-azure-sql-database?tabs=managed-identity)
+- option 1: In Azure SQL DB server level, Go to **Settings/Microsoft Entra ID** and switch current **Microsoft Entra admin** to the SAMI.
+  - This is **not recommend**, but a quick workaround
+- option 2: Create SAMI as DB user in Azure SQL DB by
+  ```
+  CREATE USER [SAMI name] FROM EXTERNAL PROVIDER
+  GO
 
+  EXEC sp_addrolemember 'db_datareader', [SAMI name]
+  GO
+  ```
 
 # Internal
 ## Data Catelog: Roles and permissions
