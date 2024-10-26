@@ -1,14 +1,13 @@
 [In a sample data lifecycle](https://learn.microsoft.com/en-us/purview/governance-roles-permissions#data-asset-lifecycle-example)
 
-# External
-## Scan
-> [Before you set up your scan, you must give the managed identity of the Microsoft Purview account permissions to enumerate your Azure subscription.](https://learn.microsoft.com/en-us/purview/manage-credentials)
-- As soon as the Microsoft Purview Account is created, a system-assigned managed identity (SAMI) is created automatically in Microsoft Entra tenant.
+# [External](https://learn.microsoft.com/en-us/purview/manage-credentials)
+As soon as the Microsoft Purview Account is created, a system-assigned managed identity (SAMI) is created automatically in Microsoft Entra tenant.
 
-### Azure Subscription
+## Azure Subscription
+
 You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
 
-### [Microsoft Fabric](https://learn.microsoft.com/en-us/purview/register-scan-fabric-tenant)
+## [Microsoft Fabric](https://learn.microsoft.com/en-us/purview/register-scan-fabric-tenant)
 1. Create/Identify a group in Entra with 
     - **Group type**: `Security`
     - **Group name**: `Fabric Connect` or another arbitrary name
@@ -20,7 +19,7 @@ You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
 7. Wait around 15 minutes before registering a scan and test connection (after you update above settings)
 
 
-### Azure SQL DB
+## Azure SQL DB
 [additional SQL steps](https://learn.microsoft.com/en-us/purview/register-scan-azure-sql-database?tabs=managed-identity)
 - option 1: In Azure SQL DB server level, Go to **Settings/Microsoft Entra ID** and switch current **Microsoft Entra admin** to the SAMI.
   - This is **not recommend**, but a quick workaround
