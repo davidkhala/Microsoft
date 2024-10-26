@@ -13,6 +13,8 @@ You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
 
 ### Microsoft Fabric
 https://learn.microsoft.com/en-us/purview/register-scan-fabric-tenant?tabs=Scenario1
+1. Create/Identify a group in Entra with 
+    - **Group type**: `Security`
 
 
 ### Azure SQL DB
