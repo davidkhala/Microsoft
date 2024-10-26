@@ -1,8 +1,5 @@
 [In a sample data lifecycle](https://learn.microsoft.com/en-us/purview/governance-roles-permissions#data-asset-lifecycle-example)
 
-
-
-
 # External
 ## Scan
 > [Before you set up your scan, you must give the managed identity of the Microsoft Purview account permissions to enumerate your Azure subscription.](https://learn.microsoft.com/en-us/purview/manage-credentials)
@@ -15,6 +12,13 @@ You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
 https://learn.microsoft.com/en-us/purview/register-scan-fabric-tenant?tabs=Scenario1
 1. Create/Identify a group in Entra with 
     - **Group type**: `Security`
+    - **Group name**: `Fabric Connect` or another arbitrary name
+2. Adding Purview's SAMI into this group `Fabric Connect`
+3. Go to [tenant settings page of Fabric portal](https://app.fabric.microsoft.com/admin-portal/tenantSettings)
+4. Select **Admin API settings** > **Service principals can access read-only admin APIs**, type in `Fabric Connect` and click [Apply]
+5. Similarly, Enable **Admin API settings** > **Enhance admin APIs responses with detailed metadata** for the entire organization
+6. Similarly, Enable **Admin API settings** > **Enhance admin APIs responses with DAX and mashup expressions** for the entire organization
+7. Wait around 15 minutes before registering a scan and test connection (after you update above settings)
 
 
 ### Azure SQL DB
