@@ -16,3 +16,8 @@ Governance Domain is seperate from Data Map solution
 - Data domain : key organization-wide entities such as customers or employees
 - Regulatory: compliance related such as GDPR, SOX, or HIPPA
 - Project: **general purpose** collaborative programs across the organization
+
+
+## Refs
+[Tutorial to setup](https://learn.microsoft.com/en-us/purview/section1-setup-your-governance-domain)
+- [based on CDC COVID-19 dataset](https://github.com/davidkhala/datasets/tree/main/SQL/covid-19)
