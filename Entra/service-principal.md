@@ -1,5 +1,5 @@
 # System-assigned Managed Identity (SAMI)
-- SAMI works like a service account.
+- SAMI works like a service account or service-principal.
 - aka. 托管标识
 
 grant access to resource such as Azure Subscription 
