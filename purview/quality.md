@@ -1,3 +1,8 @@
+# Controls
+Not ready to calculate score?
+![image](https://github.com/user-attachments/assets/70d4133f-ce72-4dff-8782-f11c6db20916)
+
+
 # Data Quality
 
 ## Role 
