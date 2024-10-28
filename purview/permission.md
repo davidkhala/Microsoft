@@ -1,5 +1,7 @@
 [In a sample data lifecycle](https://learn.microsoft.com/en-us/purview/governance-roles-permissions#data-asset-lifecycle-example)
 
+[In a sample data project planning](https://learn.microsoft.com/en-us/purview/data-catalog-get-started#reference-model-for-planning)
+
 # [External](https://learn.microsoft.com/en-us/purview/manage-credentials)
 As soon as the Microsoft Purview Account is created, a system-assigned managed identity (SAMI) is created automatically in Microsoft Entra tenant.
 
