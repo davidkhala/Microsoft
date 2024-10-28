@@ -18,6 +18,10 @@ Data Quality Reader role
 
 
 
+## Scan
+[View data quality scan status](https://learn.microsoft.com/en-us/purview/how-to-data-quality-job-monitoring#browse-data-quality-job-status)
+
+
 ### Rule type
 - Accuracy - Data should accurately represent real-world entities. Context matters! For example, if you’re storing customer addresses, ensure they match the actual locations. ??
 - Completeness
