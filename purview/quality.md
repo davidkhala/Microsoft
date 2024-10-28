@@ -11,6 +11,22 @@ Data Quality Reader role
 ## Rule
 [view rules](https://learn.microsoft.com/en-us/purview/concepts-data-quality-rules#view-existing-data-quality-rules)
 
+
+
+### Rule type
+- Accuracy - Data should accurately represent real-world entities. Context matters! For example, if you’re storing customer addresses, ensure they match the actual locations. ??
+- Completeness
+  - Should have no empty, null, or missing data. 
+- Conformity
+  - Data should align to data format, such as representation of dates, addresses, and allowed values.
+- Consistency
+  - Same information should be the same across different records
+- Timeliness
+  - Data is up to date.
+- Uniqueness
+  - No duplicated value. 
+
+
 ### DSL: Microsoft Purview Data Quality expression language.
 Not found in internet
 
