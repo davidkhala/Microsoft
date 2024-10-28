@@ -2,7 +2,11 @@
 
 
 [mannual lineage](https://learn.microsoft.com/en-us/purview/catalog-lineage-user-guide#manual-lineage)
-  > When you add lineage between two data assets, you can additionally configure the column level lineage.
+- > When you add lineage between two data assets, you can additionally configure the column level lineage.
+  - prerequisite: Both current or upstream/downstream data asset should have a schema 
+
+
+
 
 
 ## [Microsoft Fabric](https://learn.microsoft.com/en-us/purview/how-to-lineage-fabric)
