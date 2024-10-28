@@ -7,4 +7,7 @@
 
 ### Case: PowerBI
 
+Report
+- When editing lineage (mannual lineage) for PowerBI Report, it is limited to table level.
+  > Unable to map columns for this asset. The asset doesn't have a schema.
 
