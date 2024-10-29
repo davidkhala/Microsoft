@@ -26,5 +26,9 @@ Report
 
 Dataset
 > Manual lineage reporting is not supported for this asset type.
-
-
+- [Supported source for table level lineage](https://learn.microsoft.com/en-us/purview/how-to-lineage-powerbi#lineage-of-power-bi-artifacts-in-microsoft-purview)
+  - Azure SQL Database
+  - Azure Blob Storage
+  - Azure Data Lake Store (Gen1 & Gen2)
+- Supported source for column level lineage and transformations (except for Dataflows)
+  - Azure SQL Database
