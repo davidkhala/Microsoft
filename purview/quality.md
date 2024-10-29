@@ -1,6 +1,6 @@
 # Controls
-Not ready to calculate score?
-![image](https://github.com/user-attachments/assets/70d4133f-ce72-4dff-8782-f11c6db20916)
+Controls evaluate health of their data estate from the lens of industry recognized standards.
+- Target user: Data Stewards and CDO 
 
 
 # Data Quality
