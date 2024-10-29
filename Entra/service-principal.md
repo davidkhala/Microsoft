@@ -5,6 +5,7 @@ App registrations
 ## System-assigned Managed Identity (SAMI)
 - SAMI is a type of Service Principal??
 - aka. 托管标识, Azure Managed Service Identity (MSI)
+- It is listed in Microsoft Entra > `Applications` > `Enterprise applications`
 
 grant access to resource such as Azure Subscription 
 1. In each resource, go the left panel `Access Control (IAM)`
