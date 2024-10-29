@@ -1,13 +1,13 @@
 # Service Principal
 
-App registrations
+User created Service Principal is found in Microsoft Entra > `Applications` > `App registrations`
 
 ## System-assigned Managed Identity (SAMI)
 - SAMI is a type of Service Principal??
 - aka. 托管标识, Azure Managed Service Identity (MSI)
 - It is listed in Microsoft Entra > `Applications` > `Enterprise applications`
 
-grant access to resource such as Azure Subscription 
+Grant access to resource such as Azure Subscription 
 1. In each resource, go the left panel `Access Control (IAM)`
 2. Click [+ Add v] above the main widget to open drop down menu. Then click [Add role assignment]
 3. Select a **Role** and click [Next]
