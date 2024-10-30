@@ -1,15 +1,10 @@
 #!/bin/bash
 set -e
-export rg=${rg:-"Purview-ADB-Lineage-Solution-Accelerator"} # resource_group
+rg=${rg:-"Purview-ADB-Lineage-Solution-Accelerator"} # resource_group
+purviewlocation=SoutheastAsia
 if ! az group exists --resource-group $rg; then
         az group create --location $purviewlocation --resource-group $rg
 fi
-
-export purviewlocation=SoutheastAsia
-export prefix=""
-
-export tenantid=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/context.sh | bash -s tenant)
-
 
 service_principal=${service_principal:-"Purview-ADB-Lineage-Solution-Accelerator"}
 subscription=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/context.sh | bash -s subscription)
@@ -19,6 +14,13 @@ if ! [ -f $credentialFile ]; then
     # create service principal
     az ad sp create-for-rbac --name $service_principal --role Reader --scopes "/subscriptions/$subscription" --query "{appId:appId, password:password}" > $credentialFile
 fi
-export clientid=$(jq -r ".appId" $credentialFile) # Azure Service Principal client ID
-    
-export clientsecret=$(jq -r ".password" $credentialFile) # Azure Service Principal client secret
+
+echo "export rg=$rg" > settings.sh
+echo "export purviewlocation=$purviewlocation" > settings.sh
+echo "export prefix=\"\"" > settings.sh
+
+echo "export tenantid=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/context.sh | bash -s tenant)" > settings.sh
+
+echo "export clientid=$(jq -r ".appId" $credentialFile)" > settings.sh # Azure Service Principal secret ID
+
+echo "export clientsecret=$(jq -r ".password" $credentialFile)" > settings.sh # Azure Service Principal secret value
