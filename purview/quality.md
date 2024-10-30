@@ -21,6 +21,7 @@ Data Quality Reader role
 ## Scan
 [View data quality scan status](https://learn.microsoft.com/en-us/purview/how-to-data-quality-job-monitoring#browse-data-quality-job-status)
 
+> [Data Quality scan会检查Purview以及Data source的区域，目前只有Southeast Asia 是支持的，East Asia还不支持。](https://learn.microsoft.com/en-us/purview/data-catalog-regions)
 
 ### Rule type
 - Accuracy - Data should accurately represent real-world entities. Context matters! For example, if you’re storing customer addresses, ensure they match the actual locations. ??
