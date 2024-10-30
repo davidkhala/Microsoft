@@ -8,8 +8,5 @@ fi
 export purviewlocation=SoutheastAsia
 export prefix=""
 
-release=release/2.3
-
 export tenantid=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/context.sh | bash -s tenant)
 
-$@
