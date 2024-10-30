@@ -1,6 +1,9 @@
 # Service Principal
 
 User created Service Principal is found in Microsoft Entra > `Applications` > `App registrations`
+- [create wizard](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#register-an-application-with-microsoft-entra-id-and-create-a-service-principal)
+- [AuthN option: client secret](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#option-3-create-a-new-client-secret)
+
 
 ## System-assigned Managed Identity (SAMI)
 - SAMI is a type of Service Principal??
