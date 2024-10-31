@@ -23,6 +23,6 @@ purviewName=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs
 # DEBUG
 curl https://raw.githubusercontent.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator/refs/heads/release/2.3/deployment/infra/newdeploymenttemp.json -O
 
-az deployment group create --resource-group $rg --template-file "./newdeploymenttemp.json" \ 
-    --parameters purviewName=$purviewName prefixName="" clientid=$clientid clientsecret=$clientsecret
+az deployment group create --resource-group $rg --template-file "./newdeploymenttemp.json" --parameters purviewName=$purviewName prefixName= clientid=$clientid clientsecret=$clientsecret resourceTagValues={} --output none
+# if failure, clean up by `az deployment group delete --name newdeploymenttemp --resource-group $rg`
 rm newdeploymenttemp.json
