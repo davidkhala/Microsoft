@@ -11,6 +11,7 @@ credentialFile=".credential.json"
 
 if ! [ -f $credentialFile ]; then
     # create service principal
-    az ad sp create-for-rbac --name $service_principal --role Reader --scopes "/subscriptions/$subscription" --query "{appId:appId, password:password}" > $credentialFile
+    curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/entra.sh | bash -s create-service-principal $service_principal > $credentialFile 
+    
 fi
 
