@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+az config set extension.dynamic_install_allow_preview=true
 rg=${rg:-"Purview-ADB-Lineage-Solution-Accelerator"} # resource_group
 purviewlocation=SoutheastAsia
 if ! az group exists --resource-group $rg; then
