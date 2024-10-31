@@ -50,9 +50,11 @@ config-purview() {
     # learnt from https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator/pull/235
     curl https://raw.githubusercontent.com/davidkhala/Microsoft/refs/heads/main/purview/lineage/palsa/Custom_Types.json -O
 
-    curl -s -X POST $purview_endpoint/catalog/api/atlas/v2/types/typedefs -H "Authorization: Bearer $acc_purview_token" -H "Content-Type: application/json" -d @Custom_Types.json
-    
-    rm Custom_Types.json
+    curl -s -X POST $purview_endpoint/catalog/api/atlas/v2/types/typedefs -H "Authorization: Bearer $acc_purview_token" -H "Content-Type: application/json" -d @Custom_Types.json > config-purview-out.json
+  
+}
+show-databricks(){
+    # adb_details=$(az databricks workspace list --resource-group $RG_NAME)
 }
 config-databricks() {
     # TODO databricks part
@@ -65,6 +67,16 @@ config-databricks() {
         # install DataBricks CLI
         curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
     fi
+}
+
+TODO-block(){
+    ### Download Jar File
+curl -O -L https://repo1.maven.org/maven2/io/openlineage/openlineage-spark/0.18.0/openlineage-spark-0.18.0.jar
+###
+az storage container create -n rawdata --account-name $ADLSNAME --account-key $ADLSKEY
+sampleA_resp=$(az storage blob upload --account-name $ADLSNAME --account-key $ADLSKEY -f exampleInputA.csv -c rawdata -n examples/data/csv/exampleInputA/exampleInputA.csv)
+sampleB_resp=$(az storage blob upload --account-name $ADLSNAME --account-key $ADLSKEY -f exampleInputB.csv -c rawdata -n examples/data/csv/exampleInputB/exampleInputB.csv)
+
 }
 
 $@
