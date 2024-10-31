@@ -13,4 +13,7 @@ cd -
 
 Connect with existing
 ```
+
+./standalone.sh
+
 ```
