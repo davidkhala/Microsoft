@@ -16,13 +16,26 @@ deploy-connector() {
     curl https://raw.githubusercontent.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator/refs/heads/release/2.3/deployment/infra/newdeploymenttemp.json -O
 
     az deployment group create --resource-group $rg --name $deploymentName --template-file "./newdeploymenttemp.json" --parameters purviewName=$purviewName prefixName= clientid=$clientid clientsecret=$clientsecret resourceTagValues={} --output none
-    # if failure, clean up by `az deployment group delete --name newdeploymenttemp --resource-group $rg`
+
     rm newdeploymenttemp.json
-    
+
 }
 
 deploy-stats() {
-    az deployment group show --name $deploymentName --resource-group $rg
+    az deployment group show --name $deploymentName --resource-group $rg $@
+    # if failure, clean up by `az deployment group delete --name newdeploymenttemp --resource-group $rg`
+}
+deploy-env() {
+    deploy-stats --query properties.outputs >stats.value.json
+    export FUNNAME=$(jq -r '.functionAppName.value' stats.value.json)
+    export KVNAME=$(jq -r '.kvName.value' stats.value.json)
+    export ADLSNAME=$(jq -r '.storageAccountName.value' stats.value.json) # storageAccountName
+
+    # You can see there are 2 keys created in same time. We pick the second one here
+    adls_key=$(az storage account keys list -g $rg -n $ADLSNAME --query '[1].value' --output tsv)
+    echo $adls_key
+    export RGLOCATION=$purviewlocation # TODO clean this
+    rm stats.value.json
 }
 
 # Install necessary types into your Purview instance
@@ -34,23 +47,24 @@ config-purview() {
     local login_endpoint="https://login.microsoftonline.com/$tenantid/oauth2/token"
     acc_purview_token=$(curl $login_endpoint --data "resource=https://purview.azure.net&client_id=$clientid&client_secret=$clientsecret&grant_type=client_credentials" -H Metadata:true -s | jq -r '.access_token')
 
-    curl https://raw.githubusercontent.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator/refs/heads/release/2.3/deployment/infra/Custom_Types.json -O
+    # learnt from https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator/pull/235
+    curl https://raw.githubusercontent.com/davidkhala/Microsoft/refs/heads/main/purview/lineage/palsa/Custom_Types.json -O
 
     curl -s -X POST $purview_endpoint/catalog/api/atlas/v2/types/typedefs -H "Authorization: Bearer $acc_purview_token" -H "Content-Type: application/json" -d @Custom_Types.json
-    # TODO troubleshoot error
-    # {"requestId":"d1fb3a39-9016-44c0-9a7a-8164419d4188","errorCode":"ATLAS-400-00-01A","errorMessage":"invalid parameters: invalid payload, expect schemaAttributes in purview_custom_connector_generic_column should be list of string, but found: data_type"}
+    
     rm Custom_Types.json
 }
+config-databricks() {
+    # TODO databricks part
+    if ! unzip -v; then
+        echo "unzip is required. Please find and install on your OS"
+        exit 1
+    fi
 
-# TODO databricks part
-if ! unzip -v; then
-    echo "unzip is required. Please find and install on your OS"
-    exit 1
-fi
+    if ! databricks -v; then
+        # install DataBricks CLI
+        curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
+    fi
+}
 
-if ! databricks -v; then
-    # install DataBricks CLI
-    curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
-fi
-# TODO databricks part
 $@
