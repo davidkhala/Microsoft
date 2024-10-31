@@ -1,7 +1,7 @@
 # [Purview-ADB-Lineage-Solution-Accelerator (PALSA)](https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator)
 
+Build from scratch
 ```
-
 git clone https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator.git
 cd ./Purview-ADB-Lineage-Solution-Accelerator/deployment/infra/
 rm ./settings.sh
@@ -9,4 +9,8 @@ curl https://raw.githubusercontent.com/davidkhala/Microsoft/refs/heads/main/purv
 chmod +x openlineage-deployment.sh
 ./openlineage-deployment.sh
 cd -
+```
+
+Connect with existing
+```
 ```
