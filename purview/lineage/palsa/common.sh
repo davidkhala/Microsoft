@@ -1,5 +1,4 @@
-
-export rg=${rg:-"Purview-ADB-Lineage-Solution-Accelerator"} # resource_group
+rg=${rg:-"Purview-ADB-Lineage-Solution-Accelerator"} # resource_group
 export purviewlocation=SoutheastAsia
 if ! az group exists --resource-group $rg; then
         az group create --location $purviewlocation --resource-group $rg
@@ -13,6 +12,7 @@ if ! [ -f $credentialFile ]; then
     service_principal=${service_principal:-"Purview-ADB-Lineage-Solution-Accelerator"}
     export subscription=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/context.sh | bash -s subscription)
     curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/entra.sh | bash -s create-service-principal $service_principal > $credentialFile 
-    
+   
 fi
+export rg=$rg
 
