@@ -1,6 +1,6 @@
 # [Purview-ADB-Lineage-Solution-Accelerator (PALSA)](https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator)
 
-Build from scratch
+## Deploy option 1: Build from scratch
 ```
 git clone https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator.git
 cd ./Purview-ADB-Lineage-Solution-Accelerator/deployment/infra/
