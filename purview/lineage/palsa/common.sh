@@ -1,6 +1,7 @@
 set -e
 rg=${rg:-"Purview-ADB-Lineage-Solution-Accelerator"} # resource_group
 export purviewlocation=SoutheastAsia
+az config set extension.dynamic_install_allow_preview=true
 
 if [ $(az group exists --name $rg) = false ]; then
     az group create --location $purviewlocation --resource-group $rg

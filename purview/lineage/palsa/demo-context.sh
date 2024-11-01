@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-az config set extension.dynamic_install_allow_preview=true
 
 curl https://raw.githubusercontent.com/davidkhala/Microsoft/refs/heads/main/purview/lineage/palsa/common.sh -O
 source ./common.sh
