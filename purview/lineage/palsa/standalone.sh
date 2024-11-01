@@ -57,18 +57,21 @@ config-databricks() {
         if ! databricks -v; then
             # install DataBricks CLI
             curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
+            alias dbfs='databricks fs'
         fi
         echo y | az databricks -h >/dev/null
     }
 
-    local rg=${1:-$rg} # The Resource Group of Azure Databricks
+    local adb_rg=${1:-$rg} # The Resource Group of Azure Databricks
     local ADB_WS_NAME=${2:-"az-databricks"}
 
-    adb_detail=$(az databricks workspace show --resource-group $rg --name $ADB_WS_NAME)
+    adb_detail=$(az databricks workspace show --resource-group $adb_rg --name $ADB_WS_NAME)
 
     export adb_ws_url=$(jq -r '.workspaceUrl' <<<$adb_detail)
 
     global_adb_token=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/databricks.sh | bash -s get-access-token)
+    echo $global_adb_token | databricks configure --token --host https://$adb_ws_url
+
     az_token=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/context.sh | bash -s get-access-token)
     adb_ws_id=$(jq -r '.id' <<<$adb_detail)
 
@@ -82,11 +85,55 @@ config-databricks() {
     # json for cluster configuration
     # It should include adb_ws_url in namespace to ensure support for managed hive tables out of the box
     cluster_name="openlineage"                                                # name of compute cluster within Databricks
-    local adb_ws_url_id=$(echo $adb_ws_url | sed 's/.azuredatabricks.net//g') # e.g. `adb-2525538437753513.13`
+    local adb_ws_url_id=$(echo $adb_ws_url | sed 's/.azuredatabricks.net//g') # ADB-WORKSPACE-ID e.g. `adb-2525538437753513.13`
 
-    local FUNNAME=$(jq -r '.functionAppName.value' stats.value.json)
-    # TODO
-    cat <<EOF >create-cluster.json
+    # manipulate DBFS
+    {
+        # Validate connection
+        dbfs ls dbfs:/ >/dev/null
+
+        # mkdirs
+        dbfs mkdirs dbfs:/databricks/openlineage
+
+        # dbfs cp --overwrite ./openlineage-spark-*.jar               dbfs:/databricks/openlineage/
+        {
+            # Download Jar File
+            curl -O -L https://repo1.maven.org/maven2/io/openlineage/openlineage-spark/0.18.0/openlineage-spark-0.18.0.jar
+            dbfs cp --overwrite ./openlineage-spark-*.jar dbfs:/databricks/openlineage/
+
+        }
+
+        # dbfs cp --overwrite ./open-lineage-init-script.sh           dbfs:/databricks/openlineage/open-lineage-init-script.sh
+        {
+
+            STAGE_DIR="/dbfs/databricks/openlineage"
+            cat <<OUTEREND >open-lineage-init-script.sh
+#!/bin/bash
+
+STAGE_DIR="$STAGE_DIR"
+
+echo "BEGIN: Upload Spark Listener JARs"
+cp -f $STAGE_DIR/openlineage-spark-*.jar /mnt/driver-daemon/jars || { echo "Error copying Spark Listener library file"; exit 1;}
+echo "END: Upload Spark Listener JARs"
+
+echo "BEGIN: Modify Spark config settings"
+cat << 'EOF' > /databricks/driver/conf/openlineage-spark-driver-defaults.conf
+[driver] {
+  "spark.extraListeners" = "io.openlineage.spark.agent.OpenLineageSparkListener"
+}
+EOF
+echo "END: Modify Spark config settings"
+OUTEREND
+            dbfs cp --overwrite ./open-lineage-init-script.sh dbfs:/databricks/openlineage/open-lineage-init-script.sh
+        }
+    }
+
+    # TODO create cluster
+    {
+        local FUNNAME=$(jq -r '.functionAppName.value' stats.value.json)
+        local FUNCTION_APP_DEFAULT_HOST_KEY=$(az functionapp keys list --resource-group $rg --name $FUNNAME --query functionKeys.default -o tsv)
+        
+        cat <<EOF >create-cluster.json
 {
     "cluster_name": "$cluster_name",
     "spark_version": "9.1.x-scala2.12",
@@ -94,9 +141,8 @@ config-databricks() {
     "num_workers": 1,
     "spark_conf": {
         "spark.openlineage.version" : "v1",
-        "spark.openlineage.namespace" : "$adb_ws_url_id#default",
         "spark.openlineage.host" : "https://$FUNNAME.azurewebsites.net",
-        "spark.openlineage.url.param.code": "{{secrets/purview-to-adb-kv/Ol-Output-Api-Key}}"
+        "spark.openlineage.url.param.code": "$FUNCTION_APP_DEFAULT_HOST_KEY"
     },
     "spark_env_vars": {
         "PYSPARK_PYTHON" : "/databricks/python3/bin/python3"
@@ -120,54 +166,10 @@ config-databricks() {
     ]
 }
 EOF
-    STAGE_DIR="/dbfs/databricks/openlineage"
-    ### Download Jar File
-    curl -O -L https://repo1.maven.org/maven2/io/openlineage/openlineage-spark/0.18.0/openlineage-spark-0.18.0.jar
+        curl -X POST https://$adb_ws_url/api/2.0/clusters/create "${adb_api_headers[@]}" -d @create-cluster.json
 
-    # manipulate DBFS
-    {
-        # Validate connection
-        dbfs_list_response=$(
-            curl -s -i -X GET https://$adb_ws_url/api/2.0/dbfs/list "${adb_api_headers[@]}" --data '{ "path": "/" }' | head -1
-        )
-        echo "Status Code from DBFS List operation: $dbfs_list_response"
-        if [[ $dbfs_list_response == "HTTP/2 200"* ]]; then
-            echo "Confirmed access to DBFS. Continuing to create assets in DBFS"
-        else
-            echo "Failed to confim access to DBFS."
-            exit 10
-        fi
-        # mkdirs
-        curl -s -X POST https://$adb_ws_url/api/2.0/dbfs/mkdirs "${adb_api_headers[@]}" --data '{ "path": "/databricks/openlineage" }'
-
-        cat <<OUTEREND >init_script.sh
-#!/bin/bash
-
-STAGE_DIR="$STAGE_DIR"
-
-echo "BEGIN: Upload Spark Listener JARs"
-cp -f $STAGE_DIR/openlineage-spark-*.jar /mnt/driver-daemon/jars || { echo "Error copying Spark Listener library file"; exit 1;}
-echo "END: Upload Spark Listener JARs"
-
-echo "BEGIN: Modify Spark config settings"
-cat << 'EOF' > /databricks/driver/conf/openlineage-spark-driver-defaults.conf
-[driver] {
-  "spark.extraListeners" = "io.openlineage.spark.agent.OpenLineageSparkListener"
-  "spark.openlineage.url.param.codetest" = "testing"
-  "spark.openlineage.samplestorageaccount" = "$ADLSNAME"
-  "spark.openlineage.samplestoragecontainer" = "rawdata"
-}
-EOF
-echo "END: Modify Spark config settings"
-OUTEREND
-
-        init_script_base64=$(base64 -w 0 init_script.sh)
-        # TODO
-        curl -s -X POST https://$adb_ws_url/api/2.0/dbfs/put \
-            -H "Authorization: Bearer $global_adb_token" \
-            -H "X-Databricks-Azure-SP-Management-Token: $az_token" \
-            -H "X-Databricks-Azure-Workspace-Resource-Id: $adb_ws_id" \
-            --data "{ \"path\": \"/databricks/openlineage/open-lineage-init-script.sh\",\"contents\": \"$init_script_base64\",\"overwrite\": true }"
+        # TODO post install config
+        #  spark.openlineage.namespace <ADB-WORKSPACE-ID>#<DB_CLUSTER_ID>
     }
 
 }
@@ -175,12 +177,14 @@ OUTEREND
 TODO-block() {
 
     ### TODO why we need below block?
+    FUNCTION_APP_NAME=functionappqwvw.azurewebsites.net
 
     # You can see there are 2 keys created in same time. We pick the second one here
     ADLSKEY=$(az storage account keys list -g $rg -n $ADLSNAME --query '[1].value' --output tsv)
-    az storage container create -n rawdata --account-name $ADLSNAME --account-key $ADLSKEY
-    sampleA_resp=$(az storage blob upload --account-name $ADLSNAME --account-key $ADLSKEY -f exampleInputA.csv -c rawdata -n examples/data/csv/exampleInputA/exampleInputA.csv)
-    sampleB_resp=$(az storage blob upload --account-name $ADLSNAME --account-key $ADLSKEY -f exampleInputB.csv -c rawdata -n examples/data/csv/exampleInputB/exampleInputB.csv)
+    samplestoragecontainer=rawdata
+    az storage container create -n $samplestoragecontainer --account-name $ADLSNAME --account-key $ADLSKEY
+    sampleA_resp=$(az storage blob upload --account-name $ADLSNAME --account-key $ADLSKEY -f exampleInputA.csv -c $samplestoragecontainer -n examples/data/csv/exampleInputA/exampleInputA.csv)
+    sampleB_resp=$(az storage blob upload --account-name $ADLSNAME --account-key $ADLSKEY -f exampleInputB.csv -c $samplestoragecontainer -n examples/data/csv/exampleInputB/exampleInputB.csv)
 
 }
 

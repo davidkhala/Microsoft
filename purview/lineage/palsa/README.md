@@ -25,5 +25,8 @@ cd -
     ```
     `./standalone.sh config-purview`
     ```
-4. TODO 
-https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator/blob/release/2.3/deploy-base.md#download-the-openlineage-spark-agent-and-configure-with-your-azure-databricks-clusters
+4. Config your Azure Databricks
+    ```
+    ./standalone.sh config-databricks AppTeamDemo
+    ```
+
