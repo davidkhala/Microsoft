@@ -25,8 +25,16 @@ cd -
     ```
     `./standalone.sh config-purview`
     ```
-4. Config your Azure Databricks
+4. Config your Azure Databricks WorkSpace
+    - It validate installation of cli tools
+        - Install `unzip`
+        - Install `databricks` cli, and then authenticate the cli by Databricks personal access token (setup local connection profile)
+        - Install databricks extension for `az` (Azure CLI)
+    - It ship below materials into Databricks FS.
+        - openlineage plugin (openlineage-spark-0.18.0.jar) once it's downloaded
+        - `open-lineage-init-script.sh`
+    - create new Databricks cluster        
     ```
-    ./standalone.sh config-databricks AppTeamDemo
+    ./standalone.sh config-databricks <resource group of Azure Databricks workspace>
     ```
 

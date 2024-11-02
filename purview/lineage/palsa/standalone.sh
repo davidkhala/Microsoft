@@ -46,6 +46,9 @@ config-purview() {
     curl -s -X POST $purview_endpoint/catalog/api/atlas/v2/types/typedefs -H "Authorization: Bearer $acc_purview_token" -H "Content-Type: application/json" -d @Custom_Types.json >config-purview-out.json
 
 }
+dbfs(){
+    databricks fs $@
+}
 config-databricks() {
     # software prequisite block
     {
@@ -57,35 +60,19 @@ config-databricks() {
         if ! databricks -v; then
             # install DataBricks CLI
             curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
-            alias dbfs='databricks fs'
         fi
         echo y | az databricks -h >/dev/null
     }
 
     local adb_rg=${1:-$rg} # The Resource Group of Azure Databricks
     local ADB_WS_NAME=${2:-"az-databricks"}
+    local global_adb_token=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/databricks.sh | bash -s get-access-token)
 
-    adb_detail=$(az databricks workspace show --resource-group $adb_rg --name $ADB_WS_NAME)
+    adb_ws_url=$(az databricks workspace show --resource-group $adb_rg --name $ADB_WS_NAME --query workspaceUrl -o tsv)
+    databricks configure --token --host https://$adb_ws_url <<<$global_adb_token
 
-    export adb_ws_url=$(jq -r '.workspaceUrl' <<<$adb_detail)
-
-    global_adb_token=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/databricks.sh | bash -s get-access-token)
-    echo $global_adb_token | databricks configure --token --host https://$adb_ws_url
-
-    az_token=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/context.sh | bash -s get-access-token)
-    adb_ws_id=$(jq -r '.id' <<<$adb_detail)
-
-    adb_api_headers=(
-        '-H' "Authorization: Bearer $global_adb_token"
-        '-H' "X-Databricks-Azure-SP-Management-Token: $az_token"
-        '-H' "X-Databricks-Azure-Workspace-Resource-Id: $adb_ws_id"
-        '-H' 'Content-Type: application/json'
-    )
-
-    # json for cluster configuration
-    # It should include adb_ws_url in namespace to ensure support for managed hive tables out of the box
-    cluster_name="openlineage"                                                # name of compute cluster within Databricks
-    local adb_ws_url_id=$(echo $adb_ws_url | sed 's/.azuredatabricks.net//g') # ADB-WORKSPACE-ID e.g. `adb-2525538437753513.13`
+    cluster_name="openlineage"                                            # name of compute cluster within Databricks
+    local adb_ws_url_id=$(sed 's/.azuredatabricks.net//g' <<<$adb_ws_url) # ADB-WORKSPACE-ID e.g. `adb-2525538437753513.13`
 
     # manipulate DBFS
     {
@@ -128,11 +115,11 @@ OUTEREND
         }
     }
 
-    # TODO create cluster
     {
         local FUNNAME=$(jq -r '.functionAppName.value' stats.value.json)
         local FUNCTION_APP_DEFAULT_HOST_KEY=$(az functionapp keys list --resource-group $rg --name $FUNNAME --query functionKeys.default -o tsv)
-        
+
+        # json for cluster configuration
         cat <<EOF >create-cluster.json
 {
     "cluster_name": "$cluster_name",
@@ -147,44 +134,26 @@ OUTEREND
     "spark_env_vars": {
         "PYSPARK_PYTHON" : "/databricks/python3/bin/python3"
     },
-    "autotermination_minutes": 15,
+    "autotermination_minutes": 10,
     "enable_elastic_disk": true,
-    "cluster_source": "UI",
     "init_scripts": [
         {
             "dbfs":{
                 "destination": "dbfs:/databricks/openlineage/open-lineage-init-script.sh"
             }
         }
-    ],
-    "libraries": [
-        {
-            "maven": {
-                "coordinates": "com.microsoft.azure:spark-mssql-connector_2.12:1.2.0"
-            }
-        }
     ]
 }
 EOF
-        curl -X POST https://$adb_ws_url/api/2.0/clusters/create "${adb_api_headers[@]}" -d @create-cluster.json
+        clusterinfo=$(databricks clusters create --json @create-cluster.json)
+        echo $clusterinfo
+        exit 1
+        databricks libraries install --json {"cluster_id":"", "libraries":[{"maven": {"coordinates": "com.microsoft.azure:spark-mssql-connector_2.12:1.2.0"}}]}
 
         # TODO post install config
+        # It should include adb_ws_url in namespace to ensure support for managed hive tables out of the box
         #  spark.openlineage.namespace <ADB-WORKSPACE-ID>#<DB_CLUSTER_ID>
     }
-
-}
-
-TODO-block() {
-
-    ### TODO why we need below block?
-    FUNCTION_APP_NAME=functionappqwvw.azurewebsites.net
-
-    # You can see there are 2 keys created in same time. We pick the second one here
-    ADLSKEY=$(az storage account keys list -g $rg -n $ADLSNAME --query '[1].value' --output tsv)
-    samplestoragecontainer=rawdata
-    az storage container create -n $samplestoragecontainer --account-name $ADLSNAME --account-key $ADLSKEY
-    sampleA_resp=$(az storage blob upload --account-name $ADLSNAME --account-key $ADLSKEY -f exampleInputA.csv -c $samplestoragecontainer -n examples/data/csv/exampleInputA/exampleInputA.csv)
-    sampleB_resp=$(az storage blob upload --account-name $ADLSNAME --account-key $ADLSKEY -f exampleInputB.csv -c $samplestoragecontainer -n examples/data/csv/exampleInputB/exampleInputB.csv)
 
 }
 
