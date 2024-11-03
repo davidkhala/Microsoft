@@ -16,8 +16,7 @@ cd -
 
 ## Deploy option 2: Connect with existing
 0. Provision MS Purview and Azure Databricks
-    - Prepare workspace name `ADB_WS_NAME` (default: `az-databricks`)
-    - Prepare `FUNCTION_APP_DEFAULT_HOST_KEY`
+    - Prepare workspace name `workspace_name` (default: `az-databricks`)
 1. Run `./standalone.sh deploy-connector`
 2. Add the service principal `Purview-ADB-Lineage-Solution-Accelerator` to the `Data Curator` role in your Purview resource.
     - `Data Map` > `Domains` > select the Purview instance > `Role assignments`

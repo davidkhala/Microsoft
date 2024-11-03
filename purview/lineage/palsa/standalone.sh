@@ -25,11 +25,6 @@ deploy-stats() {
     az deployment group show --name $deploymentName --resource-group $rg --query properties.outputs >stats.value.json # cache the result
     # if failure, clean up by `az deployment group delete --name newdeploymenttemp --resource-group $rg`
 }
-deploy-env() {
-
-    export KVNAME=$(jq -r '.kvName.value' stats.value.json)
-    export ADLSNAME=$(jq -r '.storageAccountName.value' stats.value.json) # storageAccountName
-}
 
 # Install necessary types into your Purview instance
 config-purview() {
@@ -45,9 +40,6 @@ config-purview() {
 
     curl -s -X POST $purview_endpoint/catalog/api/atlas/v2/types/typedefs -H "Authorization: Bearer $acc_purview_token" -H "Content-Type: application/json" -d @Custom_Types.json >config-purview-out.json
 
-}
-dbfs(){
-    databricks fs $@
 }
 config-databricks() {
     # software prequisite block
@@ -65,35 +57,36 @@ config-databricks() {
     }
 
     local adb_rg=${1:-$rg} # The Resource Group of Azure Databricks
-    local ADB_WS_NAME=${2:-"az-databricks"}
+    export workspace_name=${2:-"az-databricks"}
+
     local global_adb_token=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/databricks.sh | bash -s get-access-token)
 
-    adb_ws_url=$(az databricks workspace show --resource-group $adb_rg --name $ADB_WS_NAME --query workspaceUrl -o tsv)
+    adb_ws_url=$(az databricks workspace show --resource-group $adb_rg --name $workspace_name --query workspaceUrl -o tsv)
     databricks configure --token --host https://$adb_ws_url <<<$global_adb_token
 
     cluster_name="openlineage"                                            # name of compute cluster within Databricks
     local adb_ws_url_id=$(sed 's/.azuredatabricks.net//g' <<<$adb_ws_url) # ADB-WORKSPACE-ID e.g. `adb-2525538437753513.13`
 
-    # manipulate DBFS
+    # manipulate Unity Catalog volumes
     {
-        # Validate connection
-        dbfs ls dbfs:/ >/dev/null
+        # create volume
+        volume=openlineage-volume
+        export schema=${schema:-default}
+        export catalog=${catalog:-$(sed 's/-/_/' <<<$workspace_name)}
+        curl https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/ucv.sh | bash -s create-managed $volume
 
-        # mkdirs
-        dbfs mkdirs dbfs:/databricks/openlineage
+        STAGE_DIR=/Volumes/$catalog/$schema/$volume
 
-        # dbfs cp --overwrite ./openlineage-spark-*.jar               dbfs:/databricks/openlineage/
+        # cp ./openlineage-spark-*.jar
         {
             # Download Jar File
             curl -O -L https://repo1.maven.org/maven2/io/openlineage/openlineage-spark/0.18.0/openlineage-spark-0.18.0.jar
-            dbfs cp --overwrite ./openlineage-spark-*.jar dbfs:/databricks/openlineage/
-
+            databricks fs cp --overwrite ./openlineage-spark-*.jar dbfs:$STAGE_DIR/
         }
 
-        # dbfs cp --overwrite ./open-lineage-init-script.sh           dbfs:/databricks/openlineage/open-lineage-init-script.sh
+        # dbfs cp --overwrite ./open-lineage-init-script.sh
         {
 
-            STAGE_DIR="/dbfs/databricks/openlineage"
             cat <<OUTEREND >open-lineage-init-script.sh
 #!/bin/bash
 
@@ -111,7 +104,7 @@ cat << 'EOF' > /databricks/driver/conf/openlineage-spark-driver-defaults.conf
 EOF
 echo "END: Modify Spark config settings"
 OUTEREND
-            dbfs cp --overwrite ./open-lineage-init-script.sh dbfs:/databricks/openlineage/open-lineage-init-script.sh
+            databricks fs cp --overwrite ./open-lineage-init-script.sh dbfs:$STAGE_DIR/open-lineage-init-script.sh
         }
     }
 
@@ -123,7 +116,7 @@ OUTEREND
         cat <<EOF >create-cluster.json
 {
     "cluster_name": "$cluster_name",
-    "spark_version": "9.1.x-scala2.12",
+    "spark_version": "15.4.x-scala2.12",
     "node_type_id": "Standard_DS3_v2",
     "num_workers": 1,
     "spark_conf": {
@@ -134,12 +127,13 @@ OUTEREND
     "spark_env_vars": {
         "PYSPARK_PYTHON" : "/databricks/python3/bin/python3"
     },
+    "data_security_mode":"USER_ISOLATION",
     "autotermination_minutes": 10,
     "enable_elastic_disk": true,
     "init_scripts": [
         {
-            "dbfs":{
-                "destination": "dbfs:/databricks/openlineage/open-lineage-init-script.sh"
+            "volumes":{
+                "destination": "$STAGE_DIR/open-lineage-init-script.sh"
             }
         }
     ]
