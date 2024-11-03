@@ -1,14 +1,14 @@
 set -e -x
 
 if ! [ -f ./common.sh ]; then
-    curl https://raw.githubusercontent.com/davidkhala/Microsoft/refs/heads/main/purview/lineage/palsa/common.sh -O
+    curl -s https://raw.githubusercontent.com/davidkhala/Microsoft/refs/heads/main/purview/lineage/palsa/common.sh -O
     source ./common.sh
     rm ./common.sh
 else
     source ./common.sh
 fi
 
-purviewName=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/purview.sh | bash -s name)
+purviewName=$(curl -s https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/purview.sh | bash -s name)
 
 deploymentName=newdeploymenttemp
 
@@ -41,52 +41,54 @@ config-purview() {
     curl -s -X POST $purview_endpoint/catalog/api/atlas/v2/types/typedefs -H "Authorization: Bearer $acc_purview_token" -H "Content-Type: application/json" -d @Custom_Types.json >config-purview-out.json
 
 }
-config-databricks() {
-    # software prequisite block
-    {
-        if ! unzip -v >/dev/null; then
-            echo "unzip is required. Please find and install on your OS"
-            exit 1
-        fi
-
-        if ! databricks -v; then
-            # install DataBricks CLI
-            curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
-        fi
-        echo y | az databricks -h >/dev/null
-    }
-
+login() {
     local adb_rg=${1:-$rg} # The Resource Group of Azure Databricks
     export workspace_name=${2:-"az-databricks"}
-
-    local global_adb_token=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/databricks.sh | bash -s get-access-token)
+    local global_adb_token=$(curl -s https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/databricks.sh | bash -s get-access-token)
 
     adb_ws_url=$(az databricks workspace show --resource-group $adb_rg --name $workspace_name --query workspaceUrl -o tsv)
     databricks configure --token --host https://$adb_ws_url <<<$global_adb_token
+    echo $adb_ws_url
+}
+config-databricks() {
+    # software prequisite block
+
+    if ! unzip -v >/dev/null; then
+        echo "unzip is required. Please find and install on your OS"
+        exit 1
+    fi
+
+    if ! databricks -v; then
+        # install DataBricks CLI
+        curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
+    fi
+    echo y | az databricks -h >/dev/null
+
+    export workspace_name=${2:-"az-databricks"}
+
+    adb_ws_url=$(login $@)
 
     local adb_ws_url_id=$(sed 's/.azuredatabricks.net//g' <<<$adb_ws_url) # ADB-WORKSPACE-ID e.g. `adb-2525538437753513.13`
 
     # manipulate Unity Catalog volumes
-    {
-        # create volume
-        volume=openlineage-volume
-        export schema=${schema:-default}
-        export catalog=${catalog:-$(sed 's/-/_/' <<<$workspace_name)}
-        curl https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/ucv.sh | bash -s create-managed $volume
 
-        STAGE_DIR=/Volumes/$catalog/$schema/$volume
+    # create volume
+    volume=openlineage-volume
+    export schema=${schema:-default}
+    export catalog=${catalog:-$(sed 's/-/_/' <<<$workspace_name)}
+    curl https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/ucv.sh | bash -s create-managed $volume
 
-        # cp ./openlineage-spark-*.jar
-        {
-            # Download Jar File
-            curl -O -L https://repo1.maven.org/maven2/io/openlineage/openlineage-spark/0.18.0/openlineage-spark-0.18.0.jar
-            databricks fs cp --overwrite ./openlineage-spark-*.jar dbfs:$STAGE_DIR/
-        }
+    STAGE_DIR=/Volumes/$catalog/$schema/$volume
 
-        # dbfs cp --overwrite ./open-lineage-init-script.sh
-        {
+    # dbfs cp ./openlineage-spark-*.jar
 
-            cat <<OUTEREND >open-lineage-init-script.sh
+    # Download Jar File
+    curl -O -L https://repo1.maven.org/maven2/io/openlineage/openlineage-spark/0.18.0/openlineage-spark-0.18.0.jar
+    databricks fs cp --overwrite ./openlineage-spark-0.18.0.jar dbfs:$STAGE_DIR/
+
+    # dbfs cp --overwrite ./open-lineage-init-script.sh
+
+    cat <<OUTEREND >open-lineage-init-script.sh
 #!/bin/bash
 
 STAGE_DIR="$STAGE_DIR"
@@ -103,17 +105,21 @@ cat << 'EOF' > /databricks/driver/conf/openlineage-spark-driver-defaults.conf
 EOF
 echo "END: Modify Spark config settings"
 OUTEREND
-            databricks fs cp --overwrite ./open-lineage-init-script.sh dbfs:$STAGE_DIR/open-lineage-init-script.sh
-        }
-    }
+    databricks fs cp --overwrite ./open-lineage-init-script.sh dbfs:$STAGE_DIR/open-lineage-init-script.sh
 
-    {
-        cluster_name="openlineage" # name of compute cluster within Databricks
-        local FUNNAME=$(jq -r '.functionAppName.value' stats.value.json)
-        local FUNCTION_APP_DEFAULT_HOST_KEY=$(az functionapp keys list --resource-group $rg --name $FUNNAME --query functionKeys.default -o tsv)
+    allow $STAGE_DIR
 
-        # json for cluster configuration
-        cat <<EOF >create-cluster.json
+    cluster_name="openlineage" # name of compute cluster within Databricks
+    if [[ -f stats.value.json ]]; then
+        FUNNAME=$(jq -r '.functionAppName.value' stats.value.json)
+    else
+        FUNNAME=functionappqwvw
+    fi
+    az functionapp show --name $FUNNAME >/dev/null # existence check
+    local FUNCTION_APP_DEFAULT_HOST_KEY=$(az functionapp keys list --resource-group $rg --name $FUNNAME --query functionKeys.default -o tsv)
+
+    # json for cluster configuration
+    cat <<EOF >create-cluster.json
 {
     "cluster_name": "$cluster_name",
     "spark_version": "15.4.x-scala2.12",
@@ -139,16 +145,27 @@ OUTEREND
     ]
 }
 EOF
-        clusterinfo=$(databricks clusters create --json @create-cluster.json)
-        echo $clusterinfo
-
-        databricks libraries install --json {"cluster_id":"", "libraries":[{"maven": {"coordinates": "com.microsoft.azure:spark-mssql-connector_2.12:1.2.0"}}]}
-
-        # TODO post install config
-        # It should include adb_ws_url in namespace to ensure support for managed hive tables out of the box
-        #  spark.openlineage.namespace <ADB-WORKSPACE-ID>#<DB_CLUSTER_ID>
-    }
+    clusterinfo=$(databricks clusters create --json @create-cluster.json)
+    echo $clusterinfo
 
 }
 
+TODO() {
+
+    databricks libraries install --json {"cluster_id":"", "libraries":[{"maven": {"coordinates": "com.microsoft.azure:spark-mssql-connector_2.12:1.2.0"}}]}
+
+    # TODO post install config
+    # It should include adb_ws_url in namespace to ensure support for managed hive tables out of the box
+    #  spark.openlineage.namespace <ADB-WORKSPACE-ID>#<DB_CLUSTER_ID>
+}
+allow() {
+    local STAGE_DIR=${1:-"/Volumes/az_databricks/default/openlineage-volume"}
+    curl -s https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/uc.sh -O
+    chmod +x uc.sh
+    ./uc.sh allow-script $STAGE_DIR/open-lineage-init-script.sh
+    ./uc.sh allow-jar $STAGE_DIR/openlineage-spark-0.18.0.jar
+    ./uc.sh allow-maven com.microsoft.azure:spark-mssql-connector_2.12:1.2.0
+    rm uc.sh
+
+}
 $@
