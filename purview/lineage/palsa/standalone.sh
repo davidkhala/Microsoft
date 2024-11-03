@@ -64,7 +64,6 @@ config-databricks() {
     adb_ws_url=$(az databricks workspace show --resource-group $adb_rg --name $workspace_name --query workspaceUrl -o tsv)
     databricks configure --token --host https://$adb_ws_url <<<$global_adb_token
 
-    cluster_name="openlineage"                                            # name of compute cluster within Databricks
     local adb_ws_url_id=$(sed 's/.azuredatabricks.net//g' <<<$adb_ws_url) # ADB-WORKSPACE-ID e.g. `adb-2525538437753513.13`
 
     # manipulate Unity Catalog volumes
@@ -109,6 +108,7 @@ OUTEREND
     }
 
     {
+        cluster_name="openlineage" # name of compute cluster within Databricks
         local FUNNAME=$(jq -r '.functionAppName.value' stats.value.json)
         local FUNCTION_APP_DEFAULT_HOST_KEY=$(az functionapp keys list --resource-group $rg --name $FUNNAME --query functionKeys.default -o tsv)
 
@@ -141,7 +141,7 @@ OUTEREND
 EOF
         clusterinfo=$(databricks clusters create --json @create-cluster.json)
         echo $clusterinfo
-        exit 1
+
         databricks libraries install --json {"cluster_id":"", "libraries":[{"maven": {"coordinates": "com.microsoft.azure:spark-mssql-connector_2.12:1.2.0"}}]}
 
         # TODO post install config
