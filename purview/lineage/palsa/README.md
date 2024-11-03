@@ -15,8 +15,11 @@ cd -
 ```
 
 ## Deploy option 2: Connect with existing
-0. Provision MS Purview and Azure Databricks
-    - Prepare workspace name `workspace_name` (default: `az-databricks`)
+0. Prequisite
+    - Provision MS Purview and Azure Databricks (Premium tier is required for Unity Catalog)
+    - Prepare Azure Databricks workspace name in terminal context, such as `export workspace_name=<e.g. az-databricks>`
+    - Prepare `az` authentication. such as `az login --use-device-code` with Entra identity having `Global Administrator` role
+    - Go to Databricks Account Console and set **Metastore Admin** with same Entra identity or group including it. e.g. `All account users`
 1. Run `./standalone.sh deploy-connector`
 2. Add the service principal `Purview-ADB-Lineage-Solution-Accelerator` to the `Data Curator` role in your Purview resource.
     - `Data Map` > `Domains` > select the Purview instance > `Role assignments`
