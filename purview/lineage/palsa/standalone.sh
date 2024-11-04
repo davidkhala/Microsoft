@@ -159,9 +159,9 @@ allow() {
     local STAGE_DIR=${1:-"/Volumes/az_databricks/default/openlineage-volume"}
     curl -s https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/uc.sh -O
     chmod +x uc.sh
-    ./uc.sh allow-script $STAGE_DIR/open-lineage-init-script.sh
-    ./uc.sh allow-jar $STAGE_DIR/openlineage-spark-0.18.0.jar
-    ./uc.sh allow-maven com.microsoft.azure:spark-mssql-connector_2.12:1.2.0
+    ./uc.sh allow-script $STAGE_DIR/open-lineage-init-script.sh >/dev/null
+    ./uc.sh allow-jar $STAGE_DIR/openlineage-spark-0.18.0.jar >/dev/null
+    ./uc.sh allow-maven com.microsoft.azure:spark-mssql-connector_2.12:1.2.0 >/dev/null
     rm uc.sh
 
 }
