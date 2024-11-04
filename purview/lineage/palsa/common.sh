@@ -13,7 +13,7 @@ if ! [ -f $credentialFile ]; then
     # create service principal
     service_principal=${service_principal:-"Purview-ADB-Lineage-Solution-Accelerator"}
     export subscription=$(curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/context.sh | bash -s subscription)
-    curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/entra.sh | bash -s create-service-principal $service_principal > $credentialFile
+    curl https://raw.githubusercontent.com/davidkhala/azure-utils/refs/heads/main/cli/entra.sh | bash -s create-service-principal $service_principal >$credentialFile
 
 fi
 

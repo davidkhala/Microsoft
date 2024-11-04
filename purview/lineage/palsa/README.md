@@ -14,7 +14,7 @@ chmod +x openlineage-deployment.sh
 cd -
 ```
 
-## Deploy option 2: Connect with existing
+## Deploy option 2: Connect with existing (all-purpose cluster)
 0. Prequisite
     - Provision MS Purview and Azure Databricks (Premium tier is required for Unity Catalog)
     - Prepare Azure Databricks workspace name in terminal context, such as `export workspace_name=<e.g. az-databricks>`
@@ -39,4 +39,7 @@ cd -
     ```
     ./standalone.sh config-databricks <resource group of Azure Databricks workspace>
     ```
-
+### Extend support extracting Lineage from Databricks 'Job cluster'
+0. Prepare `.credential.json` locally or `export appId=<of service principal>`. (e.g. find appId in MS Entra admin center service principal `Purview-ADB-Lineage-Solution-Accelerator`)
+1. Run `./standalone.sh config-job-compute`
+2. Assign the service principal as a `Contributor` to the Databricks Workspace

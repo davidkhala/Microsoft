@@ -147,7 +147,7 @@ OUTEREND
 EOF
     databricks clusters create --json @create-cluster.json >cluster_info.json
     rm create-cluster.json
-    cluster_id=$(cat cluster_info.json | jq -r .cluster_id)
+    cluster_id=$(jq -r .cluster_id cluster_info.json)
     rm cluster_info.json
     # editing cluster
     databricks libraries install --json "{\"cluster_id\":\"$cluster_id\", \"libraries\":[{\"maven\": {\"coordinates\": \"com.microsoft.azure:spark-mssql-connector_2.12:1.2.0\"}}]}"
@@ -163,6 +163,22 @@ allow() {
     ./uc.sh allow-jar $STAGE_DIR/openlineage-spark-0.18.0.jar >/dev/null
     ./uc.sh allow-maven com.microsoft.azure:spark-mssql-connector_2.12:1.2.0 >/dev/null
     rm uc.sh
+}
+config-job-compute() {
+    if [[ -f .credential.json ]]; then
+        appId=$(jq -r .appId .credential.json)
+    fi
+    if [[ -z $appId ]]; then
+        echo "missing appId of service_principal (Azure)"
+        exit 1
+    fi
+
+    service_principal=${service_principal:-"Purview-ADB-Lineage-Solution-Accelerator"}
+    curl -s https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/user.sh -O
+    local adminsGroupId=$(./user.sh admins)
+    ./user.sh create-service-principal $service_principal --application-id $appId --json "{\"groups\": [{\"value\": \"$adminsGroupId\"}],   "entitlements": [{"value":"allow-cluster-create"}]}"
+
+    rm user.sh
 
 }
 $@
