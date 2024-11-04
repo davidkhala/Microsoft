@@ -1,4 +1,4 @@
-set -e -x
+set -e
 
 if ! [ -f ./common.sh ]; then
     curl -s https://raw.githubusercontent.com/davidkhala/Microsoft/refs/heads/main/purview/lineage/palsa/common.sh -O
@@ -82,9 +82,9 @@ config-databricks() {
 
     # dbfs cp ./openlineage-spark-*.jar
 
-    # Download Jar File
     curl -O -L https://repo1.maven.org/maven2/io/openlineage/openlineage-spark/0.18.0/openlineage-spark-0.18.0.jar
     databricks fs cp --overwrite ./openlineage-spark-0.18.0.jar dbfs:$STAGE_DIR/
+    rm ./openlineage-spark-0.18.0.jar
 
     # dbfs cp --overwrite ./open-lineage-init-script.sh
 
@@ -106,7 +106,7 @@ EOF
 echo "END: Modify Spark config settings"
 OUTEREND
     databricks fs cp --overwrite ./open-lineage-init-script.sh dbfs:$STAGE_DIR/open-lineage-init-script.sh
-
+    rm ./open-lineage-init-script.sh
     allow $STAGE_DIR
 
     cluster_name="openlineage" # name of compute cluster within Databricks
@@ -115,7 +115,7 @@ OUTEREND
     else
         FUNNAME=functionappqwvw
     fi
-    az functionapp show --name $FUNNAME >/dev/null # existence check
+    az functionapp show --name $FUNNAME --resource-group $rg >/dev/null # existence check
     local FUNCTION_APP_DEFAULT_HOST_KEY=$(az functionapp keys list --resource-group $rg --name $FUNNAME --query functionKeys.default -o tsv)
 
     # json for cluster configuration
@@ -126,8 +126,8 @@ OUTEREND
     "node_type_id": "Standard_DS3_v2",
     "num_workers": 1,
     "spark_conf": {
-        "spark.openlineage.version" : "v1",
-        "spark.openlineage.host" : "https://$FUNNAME.azurewebsites.net",
+        "spark.openlineage.version": "v1",
+        "spark.openlineage.host": "https://$FUNNAME.azurewebsites.net",
         "spark.openlineage.url.param.code": "$FUNCTION_APP_DEFAULT_HOST_KEY"
     },
     "spark_env_vars": {
@@ -145,18 +145,15 @@ OUTEREND
     ]
 }
 EOF
-    clusterinfo=$(databricks clusters create --json @create-cluster.json)
-    echo $clusterinfo
+    databricks clusters create --json @create-cluster.json >cluster_info.json
+    rm create-cluster.json
+    cluster_id=$(cat cluster_info.json | jq -r .cluster_id)
+    rm cluster_info.json
+    # editing cluster
+    databricks libraries install --json "{\"cluster_id\":\"$cluster_id\", \"libraries\":[{\"maven\": {\"coordinates\": \"com.microsoft.azure:spark-mssql-connector_2.12:1.2.0\"}}]}"
 
-}
+    databricks clusters update --json "{\"cluster_id\":\"$cluster_id\",\"cluster\":{\"spark_conf\":{\"spark.openlineage.namespace\":\"$adb_ws_url_id#$cluster_id\" }},\"update_mask\":\"spark_conf\" }"
 
-TODO() {
-
-    databricks libraries install --json {"cluster_id":"", "libraries":[{"maven": {"coordinates": "com.microsoft.azure:spark-mssql-connector_2.12:1.2.0"}}]}
-
-    # TODO post install config
-    # It should include adb_ws_url in namespace to ensure support for managed hive tables out of the box
-    #  spark.openlineage.namespace <ADB-WORKSPACE-ID>#<DB_CLUSTER_ID>
 }
 allow() {
     local STAGE_DIR=${1:-"/Volumes/az_databricks/default/openlineage-volume"}
