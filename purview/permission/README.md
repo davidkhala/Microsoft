@@ -39,6 +39,8 @@ You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
   CREATE MASTER KEY
   GO
   ```
+## Azure Databricks
+Beyond IAM, You need to further grant **Access policies** (in the same left panel) of Key Vault to Purview's SAMI
 
 # Internal
 ## Data Catelog: Roles and permissions
