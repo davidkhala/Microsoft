@@ -15,8 +15,8 @@ GO
 
 SELECT name, credential_identity 
 FROM sys.database_scoped_credentials 
-WHERE principal_id = USER_ID('[SAMI name]'); -- Identify the Credentials
+WHERE principal_id = USER_ID('[SAMI name]') -- Identify the Credentials
 
-DROP DATABASE SCOPED CREDENTIAL [YourCredentialName];
+DROP DATABASE SCOPED CREDENTIAL "[YourCredentialName]"
 
-DROP USER "[SAMI name]";
+DROP USER "[SAMI name]"
