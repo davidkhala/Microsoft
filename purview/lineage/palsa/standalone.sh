@@ -53,12 +53,11 @@ login() {
 config-databricks() {
     # software prequisite block
 
-    if ! unzip -v >/dev/null; then
-        echo "unzip is required. Please find and install on your OS"
-        exit 1
-    fi
-
     if ! databricks -v; then
+        if ! unzip -v >/dev/null; then
+            echo "unzip is required. Please find and install on your OS"
+            exit 1
+        fi
         # install DataBricks CLI
         curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
     fi
@@ -174,9 +173,10 @@ config-job-compute() {
     fi
 
     service_principal=${service_principal:-"Purview-ADB-Lineage-Solution-Accelerator"}
-    curl -s https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/user.sh -O
+    # curl -s https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/user.sh -O
+    chmod +x user.sh
     local adminsGroupId=$(./user.sh admins)
-    ./user.sh create-service-principal $service_principal --application-id $appId --json "{\"groups\": [{\"value\": \"$adminsGroupId\"}],   "entitlements": [{"value":"allow-cluster-create"}]}"
+    ./user.sh create-service-principal $service_principal --application-id $appId --json "{\"groups\":[{\"value\":\"$adminsGroupId\"}],\"entitlements\":[{\"value\":\"allow-cluster-create\"}]}"
 
     rm user.sh
 
