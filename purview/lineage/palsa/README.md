@@ -3,6 +3,8 @@
 Author: wijohns@microsoft.com
 - https://github.com/wjohnson
 
+[Troubleshoot](https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator/blob/release/2.3/TROUBLESHOOTING.md#how-to-debug-log-files)
+
 ## Deploy option 1: Build from scratch
 ```
 git clone https://github.com/microsoft/Purview-ADB-Lineage-Solution-Accelerator.git
