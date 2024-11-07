@@ -12,6 +12,10 @@
     ![image](https://github.com/user-attachments/assets/43e74e6d-cfbd-486b-976f-ce3fa5641900)
 
 
+## Azure Databricks
+- 我在Purview目前只支持Table/View的lineage。Volume类型是不支持的。
+  - There will not be lineage data if a notebook load CSV from Volume data
+
 ## [Microsoft Fabric](https://learn.microsoft.com/en-us/purview/how-to-lineage-fabric)
 1. Select `Data Catelog` > `Discovery` > `Data assets`
 2. Choose tile 'Microsoft Fabric', then tile `Fabric workspaces`
