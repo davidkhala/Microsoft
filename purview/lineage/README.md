@@ -13,7 +13,7 @@
 
 
 ## Azure Databricks
-- 我在Purview目前只支持Table/View的lineage。Volume类型是不支持的。
+- Purview目前只支持Table/View的lineage。Volume类型是不支持的。
   - There will not be lineage data if a notebook load CSV from Volume data
 
 ## [Microsoft Fabric](https://learn.microsoft.com/en-us/purview/how-to-lineage-fabric)
