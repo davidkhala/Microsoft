@@ -1,7 +1,3 @@
-CREATE WIDGET TEXT source_table_catalog DEFAULT ""
-CREATE WIDGET TEXT target_table_catalog DEFAULT ""
-
-
 select t.workspace_id,
        t.entity_type,
        t.entity_id,
@@ -29,8 +25,8 @@ from (select workspace_id,
       where workspace_id = 3410668323225095
         and entity_type in ('NOTEBOOK')
         and source_table_catalog != 'system'
-        and source_table_catalog in (':source_table_catalog')
-        and target_table_catalog in (':target_table_catalog')
+        and source_table_catalog in (:source_table_catalog)
+        and target_table_catalog in (:target_table_catalog)
         and source_table_full_name is not null
         and target_table_full_name is not null) t
 
