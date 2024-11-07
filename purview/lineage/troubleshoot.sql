@@ -1,17 +1,14 @@
+CREATE WIDGET TEXT source_table_catalog DEFAULT ""
+CREATE WIDGET TEXT target_table_catalog DEFAULT ""
+
+
 select
-
  t.workspace_id,
-
  t.entity_type,
-
  t.entity_id,
-
  t.entity_run_id,
-
  t.source_table_full_name,
-
  t.source_type,
-
  t.target_table_full_name,
 
  t.target_type,
@@ -58,13 +55,12 @@ from
 
      and source_table_catalog != 'system'
 
-     and source_table_catalog in ('azure-open-datasets') and target_table_catalog in ('azure-open-datasets')
+     and source_table_catalog in (':source_table_catalog') and target_table_catalog in (':target_table_catalog')
 
      and source_table_full_name is not null
 
      and target_table_full_name is not null
-
-     limit 100000 
+    
 
  ) t
 
