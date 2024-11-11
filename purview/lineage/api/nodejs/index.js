@@ -11,5 +11,16 @@ export class API {
         }
         return axiosPromise(opts, otherOptions)
     }
+    async defaultAccount(tenantId){
+        await axiosPromise({
+            url: "https://management.azure.com/providers/Microsoft.Purview/getDefaultAccount",
+            params: {
+                scopeType: "Tenant",
+                "api-version":"2021-12-01",
+                scopeTenantId: tenantId
+            }
+        })
+
+    }
 
 }
