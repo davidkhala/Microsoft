@@ -1,0 +1,19 @@
+{
+  "name": "@davidkhala/purview",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidkhala/Microsoft.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@davidkhala/axios": "latest"
+  },
+  "type": "module"
+}
