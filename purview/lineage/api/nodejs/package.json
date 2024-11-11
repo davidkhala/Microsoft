@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -14,6 +15,9 @@
   },
   "dependencies": {
     "@davidkhala/axios": "latest"
+  },
+  "devDependencies": {
+    "mocha": "latest"
   },
   "type": "module"
 }
