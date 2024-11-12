@@ -1,7 +1,8 @@
 import {Abstract, getResponse} from "./interface.js";
 import PurviewDataMap from "@azure-rest/purview-datamap"
 
-// import {AtlasEntity, AtlasEntityWithExtInfo, PurviewDataMapClient} from "@azure-rest/purview-datamap/types/purview-datamap"
+// import {AtlasEntityWithExtInfo, PurviewDataMapClient, QueryOptions} from "@azure-rest/purview-datamap"
+
 const {default: createClient} = PurviewDataMap
 
 export class DataMap extends Abstract {
@@ -28,24 +29,49 @@ export class DataMap extends Abstract {
         return entityDefs.map(e => e.name);
     }
 
-    /**
-     *
-     * @param {AtlasEntity} entity
-     */
-    async updateLineage(entity) {
+
+    async lineageCreate({upstreams, downstreams, qualifiedName,name}) {
+
 
         /**
          * @type AtlasEntityWithExtInfo
          */
         const data = {
-            entity
+            entity: {
+                attributes: {
+                    inputs: upstreams ? upstreams.map(id => ({guid: id})) : undefined,
+                    outputs: downstreams ? downstreams.map(id => ({guid: id})) : undefined,
+                    qualifiedName,name
+                },
+                typeName: "Process" // TODO What is Type Process
+            }
+
         }
         const r = await this.client.path("/atlas/v2/entity").post({body: data})
+
         return getResponse(r)
     }
 
+    /**
+     *
+     * @param {QueryOptions} opts
+     * @returns {Promise<*>}
+     */
+    async assets(opts = {
+        keywords: "*"
+    }) {
+        const r = await this.client.path("/search/query").post({body: opts})
+        return getResponse(r).value
+    }
+
     async entityList(typeName) {
-        const r = await this.client.path(`/atlas/v2/entity/bulk/uniqueAttribute/type/${typeName}`).get()
+        const r = await this.client.path("/atlas/v2/entity/bulk/uniqueAttribute/type/" + typeName).get()
+        return getResponse(r)
+    }
+
+
+    async entityShow(guid) {
+        const r = await this.client.path(`/atlas/v2/entity/guid/${guid}`).get()
         return getResponse(r)
     }
 }

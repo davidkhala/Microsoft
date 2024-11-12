@@ -1,13 +1,14 @@
 import {DefaultAzureCredential} from "@azure/identity";
 import {isUnexpected} from "@azure-rest/purview-datamap";
-
+import fs from 'fs'
 export class Abstract {
     constructor(credential = new DefaultAzureCredential()) {
         this.credential = credential;
     }
 
     set accountName(accountName) {
-        this.endpoint = `https://${accountName}.purview.azure.com`;
+        // this.endpoint = `https://${accountName}.purview.azure.com`;
+        this.endpoint= 'https://api.purview-service.microsoft.com'
     }
 }
 
@@ -24,4 +25,6 @@ export const typeName = {
         report: 'powerbi_report'
     }
 }
-
+export const objectType = {
+    table: "Tables"
+}
