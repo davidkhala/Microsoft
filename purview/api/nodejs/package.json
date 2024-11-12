@@ -2,9 +2,8 @@
   "name": "@davidkhala/purview",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha test"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -14,10 +13,13 @@
     "access": "public"
   },
   "dependencies": {
-    "@davidkhala/axios": "latest"
+    "@azure-rest/purview-administration": "latest",
+    "@azure/arm-purview": "latest",
+    "@azure-rest/purview-datamap": "latest"
   },
   "devDependencies": {
-    "mocha": "latest"
+    "mocha": "latest",
+    "@azure/identity": "latest"
   },
   "type": "module"
 }
