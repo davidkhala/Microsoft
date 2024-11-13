@@ -19,7 +19,8 @@
   },
   "devDependencies": {
     "mocha": "latest",
-    "@azure/identity": "latest"
+    "@azure/identity": "latest",
+    "@davidkhala/light": "latest"
   },
   "type": "module"
 }

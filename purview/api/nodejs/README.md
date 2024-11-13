@@ -3,7 +3,6 @@
 
 https://azure.github.io/azure-sdk/releases/latest/index.html#javascript?search=purview
 
-This is common.js project
 ## dependencies
 - [@azure/arm-purview](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/purview/arm-purview)
 - [@azure-rest/purview-administration](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/purview/purview-administration-rest)

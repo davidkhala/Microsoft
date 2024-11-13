@@ -30,7 +30,7 @@ export class DataMap extends Abstract {
     }
 
 
-    async lineageCreate({upstreams, downstreams, qualifiedName,name}) {
+    async lineageCreate({upstreams, downstreams, qualifiedName, name, id, entityType}) {
 
 
         /**
@@ -39,11 +39,15 @@ export class DataMap extends Abstract {
         const data = {
             entity: {
                 attributes: {
-                    inputs: upstreams ? upstreams.map(id => ({guid: id})) : undefined,
-                    outputs: downstreams ? downstreams.map(id => ({guid: id})) : undefined,
-                    qualifiedName,name
+
+                    qualifiedName, name
                 },
-                typeName: "Process" // TODO What is Type Process
+                relationshipAttributes: {
+                    sources: upstreams ? upstreams.map(id => ({guid: id})) : [],
+                    sinks: downstreams ? downstreams.map(id => ({guid: id})) : []
+                },
+                guid: id,
+                typeName: entityType
             }
 
         }
