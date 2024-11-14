@@ -12,11 +12,16 @@ CREATE MASTER KEY
 GO
 
 -- Cleanup  
+--  by Transact-SQL syntax
+DECLARE @SAMI VARCHAR(20);
+SET @SAMI = 'admin-david'
+DECLARE @name VARCHAR(91);
 
-SELECT name, credential_identity 
-FROM sys.database_scoped_credentials 
-WHERE principal_id = USER_ID('[SAMI name]') -- Identify the Credentials
+SELECT @name = name 
+	FROM sys.database_scoped_credentials 
+	WHERE principal_id = USER_ID(@SAMI);
 
-DROP DATABASE SCOPED CREDENTIAL "[YourCredentialName]"
-
-DROP USER "[SAMI name]"
+-- TODO syntax error
+DROP DATABASE SCOPED CREDENTIAL @name
+-- TODO syntax error
+DROP USER @SAMI
