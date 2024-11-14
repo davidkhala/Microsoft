@@ -39,7 +39,6 @@ export class DataMap extends Abstract {
         const data = {
             entity: {
                 attributes: {
-
                     qualifiedName, name
                 },
                 relationshipAttributes: {

@@ -74,8 +74,13 @@ describe('data map', function () {
     it('entity get', async () => {
         const id = '1a8fdc43-73c9-4abe-83ea-40f6f6f60000'
         const r = await dataMap.entityShow(id)
-        console.debug(r.entity)
-        console.info(r.entity.relationshipAttributes.sources)
+        // console.debug(r.entity)
+        const sources = r.entity.relationshipAttributes.sources
+        // console.info(sources)
+        const sourceWithColumnLineage = sources.find(({displayText}) => displayText === 'ProductCategory')
+        console.info(sourceWithColumnLineage.relationshipAttributes.attributes.columnMapping) // is a string of format '[{"Source":"Name","Sink":"Name"}]'
+
+
     })
 
 })
