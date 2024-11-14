@@ -43,8 +43,15 @@ describe('data map', function () {
         await dataMap.lineageCreate({
             ...vProductAndDescription,
             upstreams: [
-                '16f9dde3-e1a1-43a0-a9da-88f6f6f60000', // table name:Product
-                'e8279254-5571-42bb-b6e3-5ff6f6f60000' // table name:ProductDescription
+                {
+                    guid: '16f9dde3-e1a1-43a0-a9da-88f6f6f60000',
+                    columns: {
+                        Name: 'Name'
+                    }
+                }, // table name:Product
+                {
+                    guid: 'e8279254-5571-42bb-b6e3-5ff6f6f60000'
+                } // table name:ProductDescription
             ],
         })
 
@@ -71,15 +78,30 @@ describe('data map', function () {
         console.debug(await dataMap.assets({keywords: '*'}))
 
     })
+    it('relation get', async () => {
+        const id = '252b29a4-90c6-47b4-b169-6c55ef984f68'
+        const r = await dataMap.relationShow(id)
+        console.debug(r)
+    })
+    it('relation set', async () => {
+        const id = '252b29a4-90c6-47b4-b169-6c55ef984f68'
+        const columns = {
+            Name: 'Name'
+        }
+        await dataMap.columnLineage(id, columns)
+    })
     it('entity get', async () => {
         const id = '1a8fdc43-73c9-4abe-83ea-40f6f6f60000'
         const r = await dataMap.entityShow(id)
         // console.debug(r.entity)
-        const sources = r.entity.relationshipAttributes.sources
-        // console.info(sources)
-        const sourceWithColumnLineage = sources.find(({displayText}) => displayText === 'ProductCategory')
-        console.info(sourceWithColumnLineage.relationshipAttributes.attributes.columnMapping) // is a string of format '[{"Source":"Name","Sink":"Name"}]'
+        const {sources, sinks} = r.entity.relationshipAttributes
+        const s1 = sources.find(({displayText}) => displayText === 'Product')
+        console.debug(s1)
+        const s2 = sources.find(({displayText}) => displayText === 'ProductDescription')
+        console.debug(s2)
 
+        const k1 = sinks.find(({displayText}) => displayText === 'Product')
+        console.debug(k1)
 
     })
 

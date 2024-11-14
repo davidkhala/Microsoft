@@ -29,9 +29,12 @@ export class DataMap extends Abstract {
         return entityDefs.map(e => e.name);
     }
 
+    async relationShow(guid) {
+        const r = await this.client.path('atlas/v2/relationship/guid/{guid}', guid).get()
+        return getResponse(r)
+    }
 
     async lineageCreate({upstreams, downstreams, qualifiedName, name, id, entityType}) {
-
 
         /**
          * @type AtlasEntityWithExtInfo
@@ -50,9 +53,54 @@ export class DataMap extends Abstract {
             }
 
         }
+        if (upstreams) {
+            const sources = upstreams.map(source => {
+                const {guid, columns} = source
+
+                const result = {
+                    guid
+                }
+                // TODO Don't Work
+                // if (columns) {
+                //     const columnMapping = JSON.stringify(Object.entries(columns).map(([key, value]) => ({
+                //         Source: key,
+                //         Sink: value
+                //     })))
+                //     result.relationshipAttributes = {
+                //         attributes: {
+                //             columnMapping
+                //         }
+                //     }
+                // }
+
+                return result
+            })
+            console.debug('sources', sources)
+            data.entity.relationshipAttributes.sources = sources
+        }
         const r = await this.client.path("/atlas/v2/entity").post({body: data})
 
         return getResponse(r)
+    }
+
+    // TODO Don't Work
+    async columnLineage(relationshipGuid, columns) {
+
+        const columnMapping = JSON.stringify(Object.entries(columns).map(([key, value]) => ({
+            Source: key,
+            Sink: value
+        })))
+
+        const r= await this.client.path('/atlas/v2/relationship').put({
+            body: {
+                guid: relationshipGuid,
+                attributes: {
+                    columnMapping
+                }
+            }
+        })
+        return getResponse(r)
+
     }
 
     /**
@@ -69,7 +117,8 @@ export class DataMap extends Abstract {
 
 
     async entityShow(guid) {
-        const r = await this.client.path(`/atlas/v2/entity/guid/${guid}`).get()
+        const r = await this.client.path(`/atlas/v2/entity/guid/{guid}`, guid).get()
+
         return getResponse(r)
     }
 }
