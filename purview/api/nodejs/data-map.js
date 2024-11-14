@@ -1,5 +1,6 @@
 import {Abstract, getResponse} from "./interface.js";
 import PurviewDataMap from "@azure-rest/purview-datamap"
+import {typeName} from "./format/const.js";
 
 // import {AtlasEntityWithExtInfo, PurviewDataMapClient, QueryOptions} from "@azure-rest/purview-datamap"
 
@@ -109,5 +110,15 @@ export class DataMap extends Abstract {
         const r = await this.client.path(`/atlas/v2/entity/guid/{guid}`, guid).get()
 
         return getResponse(r)
+    }
+
+    async entityGet(typeName, qualifiedName) {
+        const r = await this.client.path('/atlas/v2/entity/uniqueAttribute/type/{typeName}', typeName).get({
+            queryParameters: {
+                'attr:qualifiedName': qualifiedName
+            }
+        })
+        return getResponse(r)
+
     }
 }

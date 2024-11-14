@@ -34,6 +34,12 @@ describe('data map', function () {
         console.debug(types.filter(type => type.includes('power')))
         console.debug(types.filter(type => type.includes('databricks')))
     })
+    it('asset search', async () => {
+
+        console.debug(await dataMap.assets({keywords: 'vProductAndDescription'}));
+        console.debug(await dataMap.assets({keywords: '*'}))
+
+    })
     it('lineage', async () => {
         const targetViewName = 'vProductAndDescription'
         const r = await dataMap.assets({keywords: targetViewName});
@@ -69,12 +75,7 @@ describe('data map', function () {
         const process = r.find(({entityType}) => entityType === 'Process')
         console.debug(process)
     })
-    it('asset search', async () => {
 
-        console.debug(await dataMap.assets({keywords: 'vProductAndDescription'}));
-        console.debug(await dataMap.assets({keywords: '*'}))
-
-    })
     it('relation get', async () => {
         const id = 'e2323179-19d1-475a-aeb3-8244507161cb'
         const r = await dataMap.relationShow(id)
@@ -93,7 +94,7 @@ describe('data map', function () {
     it('entity get', async () => {
         const id = '1a8fdc43-73c9-4abe-83ea-40f6f6f60000'
         const r = await dataMap.entityShow(id)
-        // console.debug(r.entity)
+        console.debug(r.entity)
         const {sources, sinks} = r.entity.relationshipAttributes
         const s1 = sources.find(({displayText}) => displayText === 'Product')
         console.debug(s1)
@@ -102,6 +103,16 @@ describe('data map', function () {
         console.debug("-----all sources")
         console.debug(sources)
 
+    })
+    it('entity get by attrs', async () => {
+        //     modifiedTime: 1730700962000,
+        //     createTime: 1730700962000,
+        //     qualifiedName: 'mssql://sql-server-hk.database.windows.net/mssql/SalesLT/vProductAndDescription',
+        //     name: 'vProductAndDescription',
+        //     principalId: 0,
+        //     objectType: 'V '
+        let r = await dataMap.entityGet('azure_sql_view', 'mssql://sql-server-hk.database.windows.net/mssql/SalesLT/vProductAndDescription')
+        console.debug(r)
     })
 
 })
