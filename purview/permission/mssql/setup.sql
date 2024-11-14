@@ -1,0 +1,11 @@
+DECLARE @SAMI VARCHAR(20);
+SET @SAMI = 'admin-david'
+CREATE USER @SAMI FROM EXTERNAL PROVIDER
+
+EXEC sp_addrolemember 'db_owner', @SAMi
+
+CREATE MASTER KEY
+GO
+
+
+

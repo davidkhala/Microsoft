@@ -25,20 +25,14 @@ You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
 [additional SQL steps](https://learn.microsoft.com/en-us/purview/register-scan-azure-sql-database?tabs=managed-identity)
 - option 1: In Azure SQL DB server level, Go to **Settings/Microsoft Entra ID** and switch current **Microsoft Entra admin** to the SAMI.
   - This is **not recommend**, but a quick workaround
-- option 2: Create SAMI as DB user in Azure SQL DB by running below as **Microsoft Entra User**
+- option 2: Create SAMI as DB user in Azure SQL
   > The Microsoft Entra admin is the only user who can initially create other Microsoft Entra users in SQL Database
-  
-  ```
-  -- A good SQL runtime is **Query Editor** in Azure SQL DB db level
-  CREATE USER "[SAMI name]" FROM EXTERNAL PROVIDER
-  GO
-
-  EXEC sp_addrolemember 'db_owner', "[SAMI name]"
-  GO
-
-  CREATE MASTER KEY
-  GO
-  ```
+  - Run [setup.sql](./mssql/setup.sql) 
+  - To clean up
+    1. In SSMS, go to `Databases` > [database] > `Extended Events` > `Sessions`, stop and delete Purview session first
+    2. Run [clean.sql](./mssql/clean.sql) 
+  - Microsoft Entra admin of this Azure SQL Server is required as executor for running these 2 above 
+    
 ## Azure Databricks
 Databricks connection need Purview Vault.
 - Purview's SAMI should have access to write secret in Azure KeyVault.
