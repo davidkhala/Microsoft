@@ -31,7 +31,7 @@ export class DataMap extends Abstract {
 
     async relationShow(guid) {
         const r = await this.client.path('atlas/v2/relationship/guid/{guid}', guid).get()
-        return getResponse(r)
+        return getResponse(r).relationship
     }
 
     async lineageCreate({upstreams, downstreams, qualifiedName, name, id, entityType}) {
@@ -55,27 +55,13 @@ export class DataMap extends Abstract {
         }
         if (upstreams) {
             const sources = upstreams.map(source => {
-                const {guid, columns} = source
+                const {guid} = source
 
                 const result = {
                     guid
                 }
-                // TODO Don't Work
-                // if (columns) {
-                //     const columnMapping = JSON.stringify(Object.entries(columns).map(([key, value]) => ({
-                //         Source: key,
-                //         Sink: value
-                //     })))
-                //     result.relationshipAttributes = {
-                //         attributes: {
-                //             columnMapping
-                //         }
-                //     }
-                // }
-
                 return result
             })
-            console.debug('sources', sources)
             data.entity.relationshipAttributes.sources = sources
         }
         const r = await this.client.path("/atlas/v2/entity").post({body: data})
@@ -83,19 +69,22 @@ export class DataMap extends Abstract {
         return getResponse(r)
     }
 
-    // TODO Don't Work
-    async columnLineage(relationshipGuid, columns) {
+    async columnLineage(relationshipGuid, columns, typeName) {
 
         const columnMapping = JSON.stringify(Object.entries(columns).map(([key, value]) => ({
             Source: key,
             Sink: value
         })))
-
-        const r= await this.client.path('/atlas/v2/relationship').put({
+        if (!typeName) {
+            const r = await this.relationShow(relationshipGuid)
+            typeName = r.typeName
+        }
+        const r = await this.client.path('/atlas/v2/relationship').put({
             body: {
                 guid: relationshipGuid,
+                typeName,
                 attributes: {
-                    columnMapping
+                    columnMapping,
                 }
             }
         })

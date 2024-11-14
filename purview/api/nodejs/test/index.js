@@ -45,9 +45,6 @@ describe('data map', function () {
             upstreams: [
                 {
                     guid: '16f9dde3-e1a1-43a0-a9da-88f6f6f60000',
-                    columns: {
-                        Name: 'Name'
-                    }
                 }, // table name:Product
                 {
                     guid: 'e8279254-5571-42bb-b6e3-5ff6f6f60000'
@@ -79,15 +76,18 @@ describe('data map', function () {
 
     })
     it('relation get', async () => {
-        const id = '252b29a4-90c6-47b4-b169-6c55ef984f68'
+        const id = 'e2323179-19d1-475a-aeb3-8244507161cb'
         const r = await dataMap.relationShow(id)
         console.debug(r)
+
     })
     it('relation set', async () => {
-        const id = '252b29a4-90c6-47b4-b169-6c55ef984f68'
+        const id = 'e2323179-19d1-475a-aeb3-8244507161cb'
         const columns = {
-            Name: 'Name'
+            Name: 'Name',
+            ProductID: 'ProductID'
         }
+
         await dataMap.columnLineage(id, columns)
     })
     it('entity get', async () => {
@@ -99,9 +99,8 @@ describe('data map', function () {
         console.debug(s1)
         const s2 = sources.find(({displayText}) => displayText === 'ProductDescription')
         console.debug(s2)
-
-        const k1 = sinks.find(({displayText}) => displayText === 'Product')
-        console.debug(k1)
+        console.debug("-----all sources")
+        console.debug(sources)
 
     })
 
