@@ -68,11 +68,6 @@ export class DataMap extends Abstract {
         return getResponse(r).value
     }
 
-    async entityList(typeName) {
-        const r = await this.client.path("/atlas/v2/entity/bulk/uniqueAttribute/type/" + typeName).get()
-        return getResponse(r)
-    }
-
 
     async entityShow(guid) {
         const r = await this.client.path(`/atlas/v2/entity/guid/${guid}`).get()

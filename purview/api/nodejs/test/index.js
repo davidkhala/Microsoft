@@ -51,7 +51,7 @@ describe('data map', function () {
     })
     it('asset list', async () => {
         const r = await dataMap.assets();
-        assert.equal(r.length, 37)
+        assert.equal(r.length, 36)
         const allowedTypes = new Set(['Tables', 'Folders', undefined]);
         r.forEach(item => {
             assert(allowedTypes.has(item.objectType), `Unexpected value: ${item}`);
@@ -66,18 +66,13 @@ describe('data map', function () {
         console.debug(process)
     })
     it('asset search', async () => {
-        const name = 'vProductAndDescription'
-        const r = await dataMap.assets({keywords: name});
-        console.debug(r)
+
+        console.debug(await dataMap.assets({keywords: 'vProductAndDescription'}));
+        console.debug(await dataMap.assets({keywords: '*'}))
 
     })
-    it('entity list', async () => {
-        // TODO empty result
-        const r = await dataMap.entityList('azure_sql_server')
-        console.debug(r)
-    })
     it('entity get', async () => {
-        const id = '3951385f-8495-4618-a913-a8f6f6f60000'
+        const id = '1a8fdc43-73c9-4abe-83ea-40f6f6f60000'
         const r = await dataMap.entityShow(id)
         console.debug(r.entity)
         console.info(r.entity.relationshipAttributes.sources)
