@@ -1,8 +1,11 @@
-DECLARE @SAMI VARCHAR(20);
-SET @SAMI = 'admin-david'
-CREATE USER @SAMI FROM EXTERNAL PROVIDER
+DECLARE @SAMI VARCHAR(MAX);
+SET @SAMI = 'admin-david';
+DECLARE @sql NVARCHAR(MAX);
 
-EXEC sp_addrolemember 'db_owner', @SAMi
+SET @sql = 'CREATE USER ' + @SAMI + ' FROM EXTERNAL PROVIDER;';
+EXEC sp_executesql @sql;
+
+EXEC sp_addrolemember 'db_owner', @SAMI
 
 CREATE MASTER KEY
 GO
