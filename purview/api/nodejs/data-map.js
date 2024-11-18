@@ -1,15 +1,14 @@
 import {Abstract, getResponse} from "./interface.js";
 import PurviewDataMap from "@azure-rest/purview-datamap"
-import {typeName} from "./format/const.js";
+import {Entity} from "./format/reduce.js";
 
 // import {AtlasEntityWithExtInfo, PurviewDataMapClient, QueryOptions} from "@azure-rest/purview-datamap"
 
 const {default: createClient} = PurviewDataMap
 
 export class DataMap extends Abstract {
-    constructor(accountName, credential) {
+    constructor(credential) {
         super(credential);
-        this.accountName = accountName
         /**
          * @type PurviewDataMapClient
          */
@@ -35,7 +34,7 @@ export class DataMap extends Abstract {
         return getResponse(r).relationship
     }
 
-    async lineageCreate({upstreams, downstreams, qualifiedName, name, id, entityType}) {
+    async lineageCreate({upstreams, downstreams, qualifiedName, name, guid, entityType}) {
 
         /**
          * @type AtlasEntityWithExtInfo
@@ -49,25 +48,25 @@ export class DataMap extends Abstract {
                     sources: upstreams ? upstreams.map(id => ({guid: id})) : [],
                     sinks: downstreams ? downstreams.map(id => ({guid: id})) : []
                 },
-                guid: id,
+                guid,
                 typeName: entityType
             }
 
         }
         if (upstreams) {
-            const sources = upstreams.map(source => {
+            data.entity.relationshipAttributes.sources = upstreams.map(source => {
                 const {guid} = source
-
-                const result = {
+                return {
                     guid
                 }
-                return result
             })
-            data.entity.relationshipAttributes.sources = sources
         }
         const r = await this.client.path("/atlas/v2/entity").post({body: data})
+        const {guidAssignments, mutatedEntities} = getResponse(r)
+        if (mutatedEntities) {
+            return mutatedEntities.UPDATE
+        } else return guidAssignments
 
-        return getResponse(r)
     }
 
     async columnLineage(relationshipGuid, columns, typeName) {
@@ -109,7 +108,20 @@ export class DataMap extends Abstract {
     async entityShow(guid) {
         const r = await this.client.path(`/atlas/v2/entity/guid/{guid}`, guid).get()
 
-        return getResponse(r)
+        return new Entity(getResponse(r))
+    }
+
+    async entityDelete(guid, throwIfNotFound) {
+        try {
+            await this.entityShow(guid)
+        } catch (e) {
+            if (e.status === '404' && !throwIfNotFound) {
+                return false
+            }
+            throw e
+        }
+        getResponse(await this.client.path(`/atlas/v2/entity/guid/{guid}`, guid).delete())
+        return true
     }
 
     async entityGet(typeName, qualifiedName) {
@@ -118,7 +130,7 @@ export class DataMap extends Abstract {
                 'attr:qualifiedName': qualifiedName
             }
         })
-        return getResponse(r)
+        return new Entity(getResponse(r))
 
     }
 }

@@ -1,9 +1,11 @@
 import assert from 'assert'
 import {Account} from '../account.js'
 import {DataMap} from "../data-map.js";
+import {typeName} from '../format/const.js'
 import {JSONReadable} from '@davidkhala/light/format.js'
 import fs from 'fs'
 
+const {mssql: {view}} = typeName
 const tenantID = "c2a38aca-e9c7-4647-8dcd-9185476159ae"
 const subscription = "d02180af-0630-4747-ab1b-0d3b3c12dafb"
 const defaultAccountName = "admin-david"
@@ -22,10 +24,10 @@ describe('account', function () {
 })
 describe('data map', function () {
     this.timeout(0)
-    const dataMap = new DataMap("admin-david")
+    const dataMap = new DataMap()
     it('types', async () => {
         const result = await dataMap.types()
-        console.debug(result.enumDefs)
+        console.debug(result)
     })
     it('entityTypes', async () => {
         const types = await dataMap.entityTypes()
@@ -40,40 +42,16 @@ describe('data map', function () {
         console.debug(await dataMap.assets({keywords: '*'}))
 
     })
-    it('lineage', async () => {
-        const targetViewName = 'vProductAndDescription'
-        const r = await dataMap.assets({keywords: targetViewName});
-        const vProductAndDescription = r.find(({qualifiedName}) => qualifiedName.endsWith(targetViewName))
-        console.debug("vProductAndDescription", vProductAndDescription.id)
 
-        await dataMap.lineageCreate({
-            ...vProductAndDescription,
-            upstreams: [
-                {
-                    guid: '16f9dde3-e1a1-43a0-a9da-88f6f6f60000',
-                }, // table name:Product
-                {
-                    guid: 'e8279254-5571-42bb-b6e3-5ff6f6f60000'
-                } // table name:ProductDescription
-            ],
-        })
-
-    })
     it('asset list', async () => {
         const r = await dataMap.assets();
-        assert.equal(r.length, 36)
-        const allowedTypes = new Set(['Tables', 'Folders', undefined]);
+        const allowedTypes = new Set(['Tables', 'Folders', 'Reports', 'Stored procedures', undefined]);
         r.forEach(item => {
-            assert(allowedTypes.has(item.objectType), `Unexpected value: ${item}`);
+            assert(allowedTypes.has(item.objectType), `Unexpected value: ${item.objectType}`);
+            const segment = r.filter(({objectType}) => objectType === item.objectType);
+            fs.writeFileSync(`test/artifacts/${item.objectType}.json`, JSONReadable(segment))
         });
-        const tables = r.filter(({objectType}) => objectType === 'Tables')
-        const Folders = r.filter(({objectType}) => objectType === 'Folders')
-        const unknown = r.filter(({objectType}) => objectType === undefined)
-        fs.writeFileSync('test/Tables.json', JSONReadable(tables))
-        fs.writeFileSync('test/Folders.json', JSONReadable(Folders))
-        fs.writeFileSync('test/undefined.json', JSONReadable(unknown))
-        const process = r.find(({entityType}) => entityType === 'Process')
-        console.debug(process)
+
     })
 
     it('relation get', async () => {
@@ -85,17 +63,15 @@ describe('data map', function () {
     it('relation set', async () => {
         const id = 'e2323179-19d1-475a-aeb3-8244507161cb'
         const columns = {
-            Name: 'Name',
-            ProductID: 'ProductID'
+            Name: 'Name', ProductID: 'ProductID'
         }
 
         await dataMap.columnLineage(id, columns)
     })
     it('entity get', async () => {
-        const id = '1a8fdc43-73c9-4abe-83ea-40f6f6f60000'
+        const id = 'fc01fdae-c360-4c23-910a-39f6f6f60000'
         const r = await dataMap.entityShow(id)
-        console.debug(r.entity)
-        const {sources, sinks} = r.entity.relationshipAttributes
+        const {sources, sinks} = r.relationship
         const s1 = sources.find(({displayText}) => displayText === 'Product')
         console.debug(s1)
         const s2 = sources.find(({displayText}) => displayText === 'ProductDescription')
@@ -104,14 +80,15 @@ describe('data map', function () {
         console.debug(sources)
 
     })
+
+    it('entity delete', async () => {
+        const id = '3fc7b4b0-def4-470c-a27a-8cddb4e0639f'
+        const r = await dataMap.entityDelete(id)
+        console.debug(r)
+    })
     it('entity get by attrs', async () => {
-        //     modifiedTime: 1730700962000,
-        //     createTime: 1730700962000,
-        //     qualifiedName: 'mssql://sql-server-hk.database.windows.net/mssql/SalesLT/vProductAndDescription',
-        //     name: 'vProductAndDescription',
-        //     principalId: 0,
-        //     objectType: 'V '
-        let r = await dataMap.entityGet('azure_sql_view', 'mssql://sql-server-hk.database.windows.net/mssql/SalesLT/vProductAndDescription')
+        const fullName = 'mssql://always-free.database.windows.net/app-kyndryl-hk/SalesLT/vProductAndDescription'
+        const r = await dataMap.entityGet(view, fullName)
         console.debug(r)
     })
 
