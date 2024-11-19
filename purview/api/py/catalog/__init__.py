@@ -10,4 +10,5 @@ class Catalog:
     def assets(self, search_request=None):
         if search_request is None:
             search_request = {"keywords": "*"}
-        self.client.discovery.query(search_request)
+        r = self.client.discovery.query(search_request)
+        return r['value']

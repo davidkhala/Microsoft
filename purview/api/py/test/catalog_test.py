@@ -1,6 +1,9 @@
 import unittest
-from catalog import Catalog
 
+from syntax.format import JSONReadable
+from syntax.fs import write
+
+from catalog import Catalog
 
 class CatalogTestCase(unittest.TestCase):
 
@@ -8,7 +11,9 @@ class CatalogTestCase(unittest.TestCase):
         self._catalog = Catalog()
 
     def test_list(self):
-        self._catalog.assets()
+        l = self._catalog.assets()
+        write('assets.json', JSONReadable(l))
+
 
 
 if __name__ == '__main__':
