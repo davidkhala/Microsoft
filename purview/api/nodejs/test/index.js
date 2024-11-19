@@ -55,7 +55,7 @@ describe('data map', function () {
     })
 
     it('relation get', async () => {
-        const id = 'e2323179-19d1-475a-aeb3-8244507161cb'
+        const id = 'fc01fdae-c360-4c23-910a-39f6f6f60000'
         const r = await dataMap.relationShow(id)
         console.debug(r)
 
@@ -63,7 +63,7 @@ describe('data map', function () {
     it('relation set', async () => {
         const id = 'e2323179-19d1-475a-aeb3-8244507161cb'
         const columns = {
-            Name: 'Name', ProductID: 'ProductID'
+            Name: '', ProductID: ''
         }
 
         await dataMap.columnLineage(id, columns)

@@ -31,6 +31,32 @@ export class Entity {
         return this.entity.relationshipAttributes
     }
 
+    relationBySourceId(guid) {
+        const found = this.relationship.sources.find(source => source.guid === guid)
+        if (found) {
+            const {relationshipGuid, relationshipType} = found
+            return {guid: relationshipGuid, typeName: relationshipType}
+        }
+    }
+
+    relationBySinkId(guid) {
+        return this.relationship.sinks.find(sink => sink.guid === guid).relationshipGuid
+    }
+
+    /**
+     * source relationship id list
+     */
+    get upstream_relations() {
+        return this.relationship.sources.map(({relationshipGuid}) => relationshipGuid)
+    }
+
+    /**
+     * sink relationship id list
+     */
+    get downstream_relations() {
+        return this.relationship.sinks.map(({relationshipGuid}) => relationshipGuid)
+    }
+
     get type() {
         return this.entity.typeName
     }

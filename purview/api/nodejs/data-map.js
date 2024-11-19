@@ -29,6 +29,10 @@ export class DataMap extends Abstract {
         return entityDefs.map(e => e.name);
     }
 
+    /**
+     *
+     * @return {Promise<AtlasRelationshipOutput>}
+     */
     async relationShow(guid) {
         const r = await this.client.path('atlas/v2/relationship/guid/{guid}', guid).get()
         return getResponse(r).relationship
@@ -53,14 +57,6 @@ export class DataMap extends Abstract {
             }
 
         }
-        if (upstreams) {
-            data.entity.relationshipAttributes.sources = upstreams.map(source => {
-                const {guid} = source
-                return {
-                    guid
-                }
-            })
-        }
         const r = await this.client.path("/atlas/v2/entity").post({body: data})
         const {guidAssignments, mutatedEntities} = getResponse(r)
         if (mutatedEntities) {
@@ -69,19 +65,25 @@ export class DataMap extends Abstract {
 
     }
 
-    async columnLineage(relationshipGuid, columns, typeName) {
+    /**
+     *
+     * @param guid
+     * @param typeName
+     * @param {Record<string, string>} columns map with key for source column, value for sink column
+     */
+    async columnLineage({guid, typeName}, columns) {
 
         const columnMapping = JSON.stringify(Object.entries(columns).map(([key, value]) => ({
             Source: key,
-            Sink: value
+            Sink: value || key
         })))
         if (!typeName) {
-            const r = await this.relationShow(relationshipGuid)
+            const r = await this.relationShow(guid)
             typeName = r.typeName
         }
         const r = await this.client.path('/atlas/v2/relationship').put({
             body: {
-                guid: relationshipGuid,
+                guid,
                 typeName,
                 attributes: {
                     columnMapping,
@@ -124,6 +126,10 @@ export class DataMap extends Abstract {
         return true
     }
 
+    /**
+     *
+     * @return {Promise<Entity>}
+     */
     async entityGet(typeName, qualifiedName) {
         const r = await this.client.path('/atlas/v2/entity/uniqueAttribute/type/{typeName}', typeName).get({
             queryParameters: {
