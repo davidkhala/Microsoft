@@ -1,9 +1,14 @@
 import {PurviewAccountClient} from "@azure-rest/purview-administration";
 import {PurviewManagementClient} from '@azure/arm-purview';
-import {Abstract} from "./interface.js";
+import {Abstract, getResponse} from "./interface.js";
 
 export class Account extends Abstract {
 
+
+    constructor() {
+        super();
+        this.client = PurviewAccountClient(this.endpoint, this.credential);
+    }
 
     async defaultAccount(tenantID, subscriptionId) {
         const client = new PurviewManagementClient(this.credential, subscriptionId);
@@ -13,14 +18,9 @@ export class Account extends Abstract {
 
     }
 
-    set accountName(accountName) {
-        super.accountName = accountName
-        this.client = PurviewAccountClient(this.endpoint, this.credential);
-    }
-
-    async collections(){
-        const {body}= await this.client.path("/collections").get()
-        return body
+    async collections() {
+        const r = await this.client.path("/collections").get()
+        return getResponse(r)
     }
 
 }

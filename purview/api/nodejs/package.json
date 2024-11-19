@@ -1,12 +1,11 @@
 {
   "name": "@davidkhala/purview",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Purview nodejs client",
   "scripts": {
     "test": "mocha test"
   },
   "repository": {
-    "type": "git",
     "url": "https://github.com/davidkhala/Microsoft.git"
   },
   "publishConfig": {
@@ -15,11 +14,11 @@
   "dependencies": {
     "@azure-rest/purview-administration": "latest",
     "@azure/arm-purview": "latest",
-    "@azure-rest/purview-datamap": "latest"
+    "@azure-rest/purview-datamap": "latest",
+    "@azure/identity": "latest"
   },
   "devDependencies": {
     "mocha": "latest",
-    "@azure/identity": "latest",
     "@davidkhala/light": "latest"
   },
   "type": "module"
