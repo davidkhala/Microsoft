@@ -9,7 +9,10 @@
     "email": "david-khala@hotmail.com",
     "name": "David L."
   },
-  "repository": "https://github.com/davidkhala/Microsoft",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidkhala/Microsoft.git"
+  },
   "publishConfig": {
     "access": "public"
   },
