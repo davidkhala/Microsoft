@@ -4,5 +4,8 @@ Scan endpoint
 - https://api.scan.purview-service.microsoft.com
 
 # [Customized lineage](https://learn.microsoft.com/en-us/purview/legacy/how-to-purview-custom-lineage-api-user-guide)
+![image](https://github.com/user-attachments/assets/3af22fea-feaa-4dbd-ae23-4abc06305318)
 
-- https://learn.microsoft.com/en-us/rest/api/purview/datamapdataplane/entity/bulk-create-or-update?view=rest-purview-datamapdataplane-2023-09-01&tabs=HTTP
+Nodejs
+- e2e sample in `./nodejs/test/lineage.js`
+
