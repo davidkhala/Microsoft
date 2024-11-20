@@ -1,6 +1,16 @@
 import {PurviewAccountClient} from "@azure-rest/purview-administration";
 import {PurviewManagementClient} from '@azure/arm-purview';
-import {Abstract, getResponse} from "./interface.js";
+import {Abstract} from "./interface.js";
+
+export function getResponse(response) {
+    const {status, body} = response
+    if (status === '200') {
+        return body
+    } else {
+        throw response
+    }
+}
+
 
 export class Account extends Abstract {
 

@@ -45,6 +45,16 @@ export class DataMap extends Abstract {
         return getResponse(r).relationship
     }
 
+    /**
+     *
+     * @param guid The globally unique identifier of the entity.
+     * @returns {Promise<*>}
+     */
+    async lineageGet(guid) {
+        const r = await this.client.path("/atlas/v2/lineage/{guid}", guid).get()
+        return getResponse(r)
+    }
+
     async lineageCreate({upstreams, downstreams, qualifiedName, name, guid, entityType}) {
 
         /**

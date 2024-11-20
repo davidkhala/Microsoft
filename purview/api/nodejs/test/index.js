@@ -11,15 +11,15 @@ const subscription = "d02180af-0630-4747-ab1b-0d3b3c12dafb"
 const defaultAccountName = "admin-david"
 describe('account', function () {
     this.timeout(0)
+    const account = new Account()
     it('default account', async () => {
-
-        const account = new Account()
         const {accountName} = await account.defaultAccount(tenantID, subscription)
         assert.equal(accountName, defaultAccountName)
+    })
+    it('collections', async ()=>{
+        const r= await account.collections()
 
-        const {body} = await account.client.path("/collections").get()
-        console.debug(body)
-
+        console.debug(r)
     })
 })
 describe('data map', function () {
@@ -72,10 +72,6 @@ describe('data map', function () {
         const id = 'fc01fdae-c360-4c23-910a-39f6f6f60000'
         const r = await dataMap.entityShow(id)
         const {sources, sinks} = r.relationship
-        const s1 = sources.find(({displayText}) => displayText === 'Product')
-        console.debug(s1)
-        const s2 = sources.find(({displayText}) => displayText === 'ProductDescription')
-        console.debug(s2)
         console.debug("-----all sources")
         console.debug(sources)
 
@@ -88,8 +84,14 @@ describe('data map', function () {
     })
     it('entity get by attrs', async () => {
         const fullName = 'mssql://always-free.database.windows.net/app-kyndryl-hk/SalesLT/vProductAndDescription'
-        const r = await dataMap.entityGet(view, fullName)
+        const entity = await dataMap.entityGet(view, fullName)
+
+        const sources = entity.upstream_relations
+
+        const r = await dataMap.relationShow(sources[0])
         console.debug(r)
+        const l = await dataMap.lineageGet(entity.guid)
+        console.debug(l)  // Don't have too much info
     })
 
 })
