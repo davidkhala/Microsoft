@@ -1,4 +1,7 @@
-class Entity(object):
+from catalog.relationship import Relationship
+
+
+class Entity:
     def __init__(self, body: dict):
         self.entity = body['entity']
         self.referredEntities = body['referredEntities']
@@ -26,11 +29,12 @@ class Entity(object):
     def relation_by_source_id(self, guid):
         found = next((source for source in self.relationship['sources'] if source['guid'] == guid), None)
         if found:
-            return {'guid': found.get('relationshipGuid'), 'typeName': found.get('relationshipType')}
+            return Relationship(found.get('relationshipGuid'), found.get('relationshipType'))
 
     def relation_by_sink_id(self, guid):
         found = next((sink for sink in self.relationship['sinks'] if sink['guid'] == guid), None)
-        return found['relationshipGuid'] if found else None
+        if found:
+            return Relationship(found.get('relationshipGuid'), found.get('relationshipType'))
 
     @property
     def upstream_relations(self):
