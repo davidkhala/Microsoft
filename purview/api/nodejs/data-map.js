@@ -1,10 +1,17 @@
-import {Abstract, getResponse} from "./interface.js";
-import PurviewDataMap from "@azure-rest/purview-datamap"
+import {Abstract} from "./interface.js";
+import PurviewDataMap, {isUnexpected} from "@azure-rest/purview-datamap"
 import {Entity} from "./format/reduce.js";
 
 // import {AtlasEntityWithExtInfo, PurviewDataMapClient, QueryOptions} from "@azure-rest/purview-datamap"
 
 const {default: createClient} = PurviewDataMap
+
+export const getResponse = (r) => {
+    if (isUnexpected(r)) {
+        throw r;
+    }
+    return r.body
+}
 
 export class DataMap extends Abstract {
     constructor(credential) {
