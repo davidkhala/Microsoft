@@ -4,6 +4,7 @@ version = "0.0.0"
 description = ""
 authors = ["David Liu <david-khala@hotmail.com>"]
 readme = "README.md"
+packages = [{ include = "catalog" }]
 
 [tool.poetry.dependencies]
 python = "^3.13"
@@ -11,7 +12,7 @@ azure-identity = "*"
 azure-purview-catalog = "*"
 
 [tool.poetry.group.dev.dependencies]
-davidkhala-utils = "^0.0.1"
+davidkhala-utils = "*"
 
 [build-system]
 requires = ["poetry-core"]
