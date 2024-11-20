@@ -1,6 +1,6 @@
 import {Abstract} from "./interface.js";
 import PurviewDataMap, {isUnexpected} from "@azure-rest/purview-datamap"
-import {Entity} from "./format/reduce.js";
+import {Entity} from "./format/entity.js";
 
 // import {AtlasEntityWithExtInfo, PurviewDataMapClient, QueryOptions} from "@azure-rest/purview-datamap"
 

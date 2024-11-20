@@ -14,7 +14,5 @@ class CatalogTestCase(unittest.TestCase):
         l = self._catalog.assets()
         write('assets.json', JSONReadable(l))
 
-
-
 if __name__ == '__main__':
     unittest.main()
