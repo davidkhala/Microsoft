@@ -15,6 +15,10 @@
 ## Azure Databricks
 - Purview目前只支持Table/View的lineage。Volume类型是不支持的。
   - There will not be lineage data if a notebook load CSV from Volume data
+- enable system schema `system.access`
+  - > Error: Only account admins can enable system schemas
+  - You need to assign `Account admin` role to user in Databricks [**Account Console** > **User management**](https://accounts.azuredatabricks.net/users)
+  - [run script](https://github.com/davidkhala/databricks-common/blob/main/cli/lineage.sh)
 
 ## Azure SQL DB
 > Failed to AddOrUpdate lineage scan for <scan-name>: The current database for lineage scan is read-only. Please update with a writeable database.
