@@ -5,9 +5,12 @@
 - > Fabric administration is centralized in the [Admin portal](https://app.fabric.microsoft.com/admin-portal/tenantSettings).
 
 
-Fabric is a combination of
+Fabric is a combination of workloads
 - [PowerBI](https://github.com/davidkhala/power/tree/main/bi)
 - Data factory: combining Power Query with the scale of Azure Data Factory
+- Data Activator: ?
+- Industry Solutions: ?
+- Real-Time Intelligence: ?
 - Synapse
   - Data Engineering: a Spark platform
   - Data Warehouse
