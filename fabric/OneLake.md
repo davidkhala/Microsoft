@@ -8,4 +8,5 @@ OneLake is the OneDrive for data
 # OneCopy
 > OneCopy allows you to read data from a single copy, without moving or duplicating data.
 
-Shortcuts allow you to quickly source your existing cloud data without having to copy it
+**Shortcuts** allow you to quickly source your existing cloud data without having to copy it
+- target: ADLS Gen2, OneLake
