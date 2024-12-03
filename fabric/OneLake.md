@@ -4,6 +4,7 @@ OneLake is the OneDrive for data
 > all your data stored in a single open format in **OneLake**
 - built on top of Azure Data Lake Storage (ADLS)
 - all of the compute engines in Fabric automatically store their data in OneLake
+- Default storage format: `Delta Parquet`
 # OneCopy
 > OneCopy allows you to read data from a single copy, without moving or duplicating data.
 
