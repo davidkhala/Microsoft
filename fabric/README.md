@@ -18,3 +18,6 @@ Fabric is a combination of workloads
   - Real-Time Intelligence 
 
 > Fabric is built on Power BI and Azure Data Lake Storage, with other capabilities included. 
+
+Integrate with Purview by
+- sensitivity labels
