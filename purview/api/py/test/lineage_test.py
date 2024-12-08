@@ -1,6 +1,6 @@
 import unittest
 import const
-from catalog import Catalog
+from davidkhala.purview import Catalog
 
 db_endpoint = 'mssql://always-free.database.windows.net/app-kyndryl-hk'
 
@@ -13,7 +13,7 @@ sourceTableType = const.type_name['mssql']['table']
 targetViewType = const.type_name['mssql']['view']
 
 
-class LineageTestCase(unittest.TestCase):
+class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
     def setUp(self):
         self._catalog = Catalog()
         self.vProductAndDescription = self._catalog.get_entity(targetViewType, targetViewName)
@@ -54,6 +54,21 @@ class LineageTestCase(unittest.TestCase):
             'Description': None
         })
 
+
+
+class RenameNotebookTestcase(unittest.TestCase):
+
+    def setUp(self):
+        from davidkhala.databricks.workspace.path import SDK
+        from davidkhala.databricks.workspace import Workspace
+        w = Workspace.from_local()
+        self.s = SDK.from_workspace(w)
+    def test(self):
+        # TODO get all notebook items
+
+        pass
+    def test_rename(self):
+        self.s.get_by(notebook_id=918032188629039)
 
 if __name__ == '__main__':
     unittest.main()

@@ -10,7 +10,7 @@ const sourceTable_ProductDescription = db_endpoint + '/SalesLT/ProductDescriptio
 const sourceTable_ProductModelProductDescription = db_endpoint + '/SalesLT/ProductModelProductDescription'
 const sourceTableType = table
 const targetViewType = view
-describe('', function () {
+describe('sample dataset in Azure SQL DB', function () {
     this.timeout(0)
     const dataMap = new DataMap()
     let Product, ProductDescription, ProductModel, ProductModelProductDescription

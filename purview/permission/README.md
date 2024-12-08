@@ -34,9 +34,17 @@ You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
   - Microsoft Entra admin of this Azure SQL Server is required as executor for running these 2 above 
     
 ## Azure Databricks
-Databricks connection need Purview Vault.
-- Purview's SAMI should have access to write secret in Azure KeyVault.
-- https://github.com/davidkhala/azure-utils/tree/main/vault#permission
+It requires
+- **Credential**, supported by Purview Vault 
+  - Purview's SAMI should have access to write secret in Azure KeyVault.
+  - https://github.com/davidkhala/azure-utils/tree/main/vault#permission
+- **HTTP Path** of SQL warehouse
+
+### Azure Databricks Unity Catalog
+It requires
+- **Workspace URL** (e.g. `adb-2367537008441771.11.azuredatabricks.net` )
+- **HTTP Path** of SQL warehouse
+
 
 
 # Internal

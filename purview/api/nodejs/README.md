@@ -1,4 +1,6 @@
+- e2e sample in `./test/lineage.js`
 
+# SDK refs
 [Source code (github)](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/purview)
 
 https://azure.github.io/azure-sdk/releases/latest/index.html#javascript?search=purview

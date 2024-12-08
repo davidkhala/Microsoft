@@ -6,6 +6,3 @@ Scan endpoint
 # [Customized lineage](https://learn.microsoft.com/en-us/purview/legacy/how-to-purview-custom-lineage-api-user-guide)
 ![image](https://github.com/user-attachments/assets/3af22fea-feaa-4dbd-ae23-4abc06305318)
 
-Nodejs
-- e2e sample in `./nodejs/test/lineage.js`
-

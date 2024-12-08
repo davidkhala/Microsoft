@@ -1,4 +1,4 @@
-from catalog.relationship import Relationship
+from davidkhala.purview.relationship import Relationship
 
 
 class Entity:

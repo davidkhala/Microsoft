@@ -1,9 +1,9 @@
 import unittest
 
-from syntax.format import JSONReadable
-from syntax.fs import write
+from davidkhala.syntax.format import JSONReadable
+from davidkhala.syntax.fs import write
 
-from catalog import Catalog
+from davidkhala.purview import Catalog
 
 class CatalogTestCase(unittest.TestCase):
 

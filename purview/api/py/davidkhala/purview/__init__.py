@@ -1,8 +1,8 @@
 from azure.identity import DefaultAzureCredential
 from azure.purview.catalog import PurviewCatalogClient
 import json
-from catalog.entity import Entity
-from catalog.relationship import Relationship
+from davidkhala.purview.entity import Entity
+from davidkhala.purview.relationship import Relationship
 
 
 class Catalog:
