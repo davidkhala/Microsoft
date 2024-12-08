@@ -56,7 +56,7 @@ class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
 
 
 
-class RenameNotebookTestcase(unittest.TestCase):
+class DatabricksTestcase(unittest.TestCase):
 
     def setUp(self):
         from davidkhala.databricks.workspace.path import SDK

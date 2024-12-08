@@ -10,7 +10,8 @@ packages = [{ include = "davidkhala" }]
 python = "^3.13"
 azure-identity = "*"
 azure-purview-catalog = "*"
-davidkhala-databricks = "*"
+davidkhala-databricks = { version = "*", extras = ["connect"] }
+
 
 [tool.poetry.group.dev.dependencies]
 davidkhala-utils = "*"
