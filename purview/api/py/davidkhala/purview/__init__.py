@@ -10,7 +10,7 @@ class Catalog:
         credentials = DefaultAzureCredential()
         self.client = PurviewCatalogClient("https://api.purview-service.microsoft.com", credentials, **kwargs)
 
-    def assets(self, search_request=None):
+    def assets(self, search_request: dict = None):
         if search_request is None:
             search_request = {"keywords": "*"}
         r = self.client.discovery.query(search_request)
