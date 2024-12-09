@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{ include = "davidkhala" }]
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.12"
 azure-identity = "*"
 azure-purview-catalog = "*"
 davidkhala-databricks = { version = "*", extras = ["connect"] }

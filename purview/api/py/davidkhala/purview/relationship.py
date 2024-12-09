@@ -1,4 +1,3 @@
-# TODO WIP
 class Relationship:
     def __init__(self, guid, type_name):
         self.guid = guid

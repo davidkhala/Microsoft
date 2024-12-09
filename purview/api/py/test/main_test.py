@@ -13,10 +13,13 @@ class CatalogTestCase(unittest.TestCase):
     def test_list(self):
         l = self._catalog.assets()
         write_json(l, 'assets')
-    def test_find(self):
-        l=self._catalog.assets({"keywords": "1274571724986851"})
-        write_json(l, 'assets_one')
-        # TODO https://learn.microsoft.com/en-us/rest/api/purview/datamapdataplane/discovery/query?view=rest-purview-datamapdataplane-2023-09-01&tabs=HTTP#discovery_query_type
+
+    def test_update(self):
+        guid = "bbc03f8d-4a4e-4413-9bf7-33016c7aa695"
+        e = self._catalog.get_entity(guid=guid)
+
+        self._catalog.update_entity(e, guid=e.guid)
+
 
 if __name__ == '__main__':
     unittest.main()

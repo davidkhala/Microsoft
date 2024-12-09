@@ -1,6 +1,8 @@
 import unittest
+
 import const
-from davidkhala.purview import Catalog
+from davidkhala.purview.lineage import Lineage
+from davidkhala.purview.lineage.databricks import Databricks
 
 db_endpoint = 'mssql://always-free.database.windows.net/app-kyndryl-hk'
 
@@ -15,16 +17,21 @@ targetViewType = const.type_name['mssql']['view']
 
 class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
     def setUp(self):
-        self._catalog = Catalog()
-        self.vProductAndDescription = self._catalog.get_entity(targetViewType, targetViewName)
-        self.Product = self._catalog.get_entity(sourceTableType, sourceTable_Product)
-        self.ProductModel = self._catalog.get_entity(sourceTableType, sourceTable_ProductModel)
-        self.ProductDescription = self._catalog.get_entity(sourceTableType, sourceTable_ProductDescription)
-        self.ProductModelProductDescription = self._catalog.get_entity(sourceTableType,
-                                                                       sourceTable_ProductModelProductDescription)
+        self.l = Lineage()
+        self.vProductAndDescription = self.l.get_entity(type_name=targetViewType, qualified_name=targetViewName)
+        self.Product = self.l.get_entity(type_name=sourceTableType, qualified_name=sourceTable_Product)
+        self.ProductModel = self.l.get_entity(type_name=sourceTableType, qualified_name=sourceTable_ProductModel)
+        self.ProductDescription = self.l.get_entity(
+            type_name=sourceTableType,
+            qualified_name=sourceTable_ProductDescription
+        )
+        self.ProductModelProductDescription = self.l.get_entity(
+            type_name=sourceTableType,
+            qualified_name=sourceTable_ProductModelProductDescription
+        )
 
     def test_table2view_lineage(self):
-        self._catalog.lineage_table(self.vProductAndDescription, [
+        self.l.table(self.vProductAndDescription, [
             self.Product.guid,
             self.ProductDescription.guid,
             self.ProductModel.guid,
@@ -40,20 +47,19 @@ class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
 
         r_ProductModelProductDescription = self.vProductAndDescription.relation_by_source_id(
             self.ProductModelProductDescription.guid)
-        self._catalog.lineage_column(r_Product, {
+        self.l.column(r_Product, {
             'ProductID': None,
             'Name': None,
         })
-        self._catalog.lineage_column(r_ProductModel, {
+        self.l.column(r_ProductModel, {
             'Name': 'ProductModel'
         })
-        self._catalog.lineage_column(r_ProductDescription, {
+        self.l.column(r_ProductDescription, {
             'Culture': None
         })
-        self._catalog.lineage_column(r_ProductModelProductDescription, {
+        self.l.column(r_ProductModelProductDescription, {
             'Description': None
         })
-
 
 
 class DatabricksTestcase(unittest.TestCase):
@@ -63,12 +69,15 @@ class DatabricksTestcase(unittest.TestCase):
         from davidkhala.databricks.workspace import Workspace
         w = Workspace.from_local()
         self.s = SDK.from_workspace(w)
-    def test(self):
-        # TODO get all notebook items
+        self.l = Databricks(Lineage())
 
-        pass
     def test_rename(self):
-        self.s.get_by(notebook_id=918032188629039)
+        notebooks = self.l.notebooks()
+        for notebook in notebooks:
+            new_name = self.s.get_by(notebook_id=notebook.notebook_id)
+            if new_name:  # if found
+                self.l.notebook_rename(notebook, new_name)
+
 
 if __name__ == '__main__':
     unittest.main()

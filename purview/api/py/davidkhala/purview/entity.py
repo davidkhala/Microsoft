@@ -1,6 +1,31 @@
 from davidkhala.purview.relationship import Relationship
 
 
+class Asset:
+    def __init__(self, value: dict):
+        self.score = value["@search.score"]
+        self.assetType = value['assetType'][0]
+        self.collectionId = value['collectionId']
+        self.domainId = value['domainId']
+        self.entityType = value['entityType']
+        self.id = value['id']
+        self.name = value['name']
+        self.qualifiedName = value['qualifiedName']
+
+    def as_entity(self):
+        return Entity({
+            'entity': {
+                'guid': self.id,
+                'attributes': {
+                    'name': self.name,
+                    'qualifiedName': self.qualifiedName,
+                },
+                'typeName': self.entityType,
+            },
+            'referredEntities': None
+        })
+
+
 class Entity:
     def __init__(self, body: dict):
         self.entity = body['entity']
@@ -13,6 +38,10 @@ class Entity:
     @property
     def name(self):
         return self.entity['attributes']['name']
+
+    @name.setter
+    def name(self, value):
+        self.entity['attributes']['name'] = value
 
     @property
     def qualifiedName(self):

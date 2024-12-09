@@ -1,3 +1,7 @@
+/**
+ *
+ * @enum {string} entityType
+ */
 export const typeName = {
     powerbi: {
         dataset: "powerbi_dataset",
@@ -10,6 +14,10 @@ export const typeName = {
         view: 'azure_sql_view',
         table: 'azure_sql_table',
         DB: 'azure_sql_db',
+    },
+    databricks: {
+        notebook: 'databricks_notebook',
+        table: 'databricks_table'
     }
 }
 export const objectType = {
