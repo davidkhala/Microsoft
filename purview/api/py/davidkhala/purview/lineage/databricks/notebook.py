@@ -1,44 +1,9 @@
-import copy
-
-from davidkhala.purview import Asset
-from davidkhala.purview.lineage import Lineage
-
-
-class Notebook(Asset):
-
-    @property
-    def notebook_id(self):
-        """
-        object_id in Databricks API
-        :return:
-        """
-        return self.qualifiedName.split('/')[-1]
-
-
-class Databricks:
-    def __init__(self, l: Lineage):
-        self.l = l
-
-    def notebooks(self) -> list[Notebook]:
-        values = self.l.assets({
-            "filter": {
-                "or": [{"entityType": "databricks_notebook"}]
-            }
-        })
-        return list(map(lambda value: Notebook(value), values))
-
-    def notebook_rename(self, notebook: Notebook, new_name: str):
-        e = notebook.as_entity()
-        e.name = new_name
-        return self.l.update_entity(e)
-
-
-from pyspark.sql import DataFrame
+from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import col
-from databricks.sdk.runtime import spark
 
 
-def lineage_data(source_catalogs: list[str], target_catalogs: list[str] = None) -> DataFrame:
+def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalogs: list[str] = None,
+                 *, workspace_id: str) -> DataFrame:
     table_lineage_df = spark.table("system.access.table_lineage")
     source_catalogs.append(spark.catalog.currentCatalog())
     if not target_catalogs:
@@ -52,7 +17,11 @@ def lineage_data(source_catalogs: list[str], target_catalogs: list[str] = None) 
         (col("target_table_catalog").isin(*target_catalogs)) &
         (col("source_table_full_name").isNotNull()) &
         (col("target_table_full_name").isNotNull())
-    ).select(
+    )
+    if workspace_id:
+        t_df.filter(col("workspace_id") == workspace_id)
+
+    t_df.select(
         "workspace_id",
         "entity_type",
         "entity_id",
