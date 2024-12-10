@@ -16,9 +16,8 @@ describe('account', function () {
         const {accountName} = await account.defaultAccount(tenantID, subscription)
         assert.equal(accountName, defaultAccountName)
     })
-    it('collections', async ()=>{
-        const r= await account.collections()
-
+    it('collections', async () => {
+        const r = await account.collections()
         console.debug(r)
     })
 })

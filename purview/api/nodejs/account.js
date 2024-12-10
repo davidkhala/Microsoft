@@ -30,7 +30,7 @@ export class Account extends Abstract {
 
     async collections() {
         const r = await this.client.path("/collections").get()
-        return getResponse(r)
+        return getResponse(r).value
     }
 
 }

@@ -20,11 +20,13 @@
     "@azure-rest/purview-administration": "latest",
     "@azure/arm-purview": "latest",
     "@azure-rest/purview-datamap": "latest",
-    "@azure/identity": "latest"
+    "@azure/identity": "latest",
+    "@azure-rest/purview-scanning": "latest"
   },
   "devDependencies": {
     "mocha": "latest",
-    "@davidkhala/light": "latest"
+    "@davidkhala/light": "latest",
+    "@azure/core-paging": "latest"
   },
   "type": "module"
 }
