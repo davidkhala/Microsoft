@@ -9,7 +9,6 @@ def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalog
     if not target_catalogs:
         target_catalogs = source_catalogs
 
-    # Filter and select relevant columns for the first subquery
     t_df = table_lineage_df.filter(
         (col("entity_type").isin('NOTEBOOK')) &
         (col("source_table_catalog") != 'system') &
@@ -36,7 +35,6 @@ def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalog
     # Read the column_lineage DataFrame
     column_lineage_df = spark.table("system.access.column_lineage")
 
-    # Filter and select relevant columns for the second subquery
     c_df = column_lineage_df.select(
         "entity_type",
         "entity_id",

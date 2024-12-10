@@ -10,11 +10,16 @@ packages = [{ include = "davidkhala" }]
 python = "^3.12"
 azure-identity = "*"
 azure-purview-catalog = "*"
-
+#
+azure-purview-scanning = { version = "*", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 davidkhala-utils = "*"
 davidkhala-databricks = { version = "*", extras = ["connect"] }
+
+[tool.poetry.extras]
+scan = ["azure-purview-scanning"]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
