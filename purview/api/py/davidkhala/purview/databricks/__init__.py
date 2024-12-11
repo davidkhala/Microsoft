@@ -52,35 +52,27 @@ class Databricks:
 
     def table(self, full_name) -> Table | None:
 
-        """
-        TODO It does not work with filter
-        {
-            "attributeName": "qualifiedName",
-            "operator": "contains",
-            "attributeValue": f"/catalogs/{catalog}/schemas/{schema}/tables/{table}"
-        },
-        # databricks://6874eaf2-721e-4c52-a79f-8d3c0ded5e1d/catalogs/azureopendatastorage/schemas/nyctlc/tables/fhvhv
-        :param full_name:
-        :return:
-        """
         catalog, schema, table = full_name.split('.')
 
-        pattern = f"/catalogs/{catalog}/schemas/{schema}/tables/{table}"
-        raw_found = self.c.assets({
+        qualifiedName_filters = Array([catalog, schema, table]).map(lambda token: {
+            "attributeName": "qualifiedName",
+            "operator": "contains",
+            "attributeValue": token
+        })
+
+        found = self.c.assets({
             "filter": {
                 "and": [
-
                     {
                         "attributeName": "name",
                         "operator": "eq",
                         "attributeValue": table
                     },
-
                     {"entityType": entityType['databricks']['table']},
+                    *qualifiedName_filters,
                 ]
             }
         })
-        found = Array(raw_found).filter(lambda asset: asset['qualifiedName'].endswith(pattern))
 
         if len(found) == 0:
             return None
@@ -90,6 +82,7 @@ class Databricks:
                 warnings.warn(matched.__str__())
             raise RuntimeWarning(f"Multiple Databricks tables found with name '{full_name}'")
         else:
+            assert found[0]['qualifiedName'].endswith(f"/catalogs/{catalog}/schemas/{schema}/tables/{table}")
             return Table(found[0])
 
     def notebook_rename(self, notebook: Notebook, new_name: str):
