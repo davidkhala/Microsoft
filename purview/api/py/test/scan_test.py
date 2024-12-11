@@ -51,7 +51,12 @@ class RunTestCase(unittest.TestCase):
             print("\n")
 
     def test_run(self):
-        run_id = self.run.start(wait_until_success=True)
+        """
+        This will last for > 3 minutes
+        :return:
+        """
+        self.run.start(wait_until_success=True)
+
 
 
 

@@ -1,7 +1,7 @@
 import {DataMap} from "../data-map.js";
-import {typeName} from "../format/const.js"
+import {entityType} from "../format/const.js"
 
-const {mssql: {table, view}} = typeName
+const {mssql: {table, view}} = entityType
 const db_endpoint = 'mssql://always-free.database.windows.net/app-kyndryl-hk'
 const targetViewName = db_endpoint + '/SalesLT/vProductAndDescription'
 const sourceTable_Product = db_endpoint + '/SalesLT/Product'

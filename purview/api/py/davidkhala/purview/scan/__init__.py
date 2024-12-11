@@ -38,11 +38,11 @@ class Run:
         assert receipt['status'] == 'Accepted'
         return receipt['scanResultId']
 
-    def wait_until_success(self, run_id):
+    def wait_until_success(self, run_id: str):
         found = self.get(run_id)
         if not found:
             raise RuntimeError(f"Run({run_id}) not found")
-        if found['status'] == 'Queued':
+        if found['status'] in ['Queued', 'Running']:
             from time import sleep
             sleep(1)
             return self.wait_until_success(run_id)
@@ -53,14 +53,14 @@ class Run:
 
     def start(self, *, scan_level: ScanLevel = ScanLevel.Full, wait_until_success):
         import uuid
-        run_id = uuid.uuid4()
+        run_id = str(uuid.uuid4())
         receipt = self.client.scan_result.run_scan(self.data_source_name, self.scan_name, run_id, scan_level=scan_level)
 
         if wait_until_success:
             self.wait_until_success(run_id)
         return Run.get_id(receipt)
 
-    def get(self, run_id):
+    def get(self, run_id: str):
         for run in self.client.scan_result.list_scan_history(self.data_source_name, self.scan_name):
             if run['id'] == run_id:
                 return run

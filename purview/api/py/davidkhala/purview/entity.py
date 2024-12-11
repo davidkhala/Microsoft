@@ -1,33 +1,79 @@
+from abc import abstractmethod
+
 from davidkhala.purview.relationship import Relationship
 
 
-class Asset:
+class AbstractEntity(dict):
+    @property
+    @abstractmethod
+    def entityType(self):
+        pass
+
+    @property
+    @abstractmethod
+    def qualifiedName(self):
+        pass
+
+
+    @property
+    @abstractmethod
+    def id(self):
+        pass
+
+
+    @property
+    @abstractmethod
+    def name(self):
+        pass
+
+
+class Asset(AbstractEntity):
     def __init__(self, value: dict):
-        self.score = value["@search.score"]
-        self.assetType = value['assetType'][0]
-        self.collectionId = value['collectionId']
-        self.domainId = value['domainId']
-        self.entityType = value['entityType']
-        self.id = value['id']
-        self.name = value['name']
-        self.qualifiedName = value['qualifiedName']
+        super().__init__(value)
+        self.value = value
 
-    def as_entity(self):
-        return Entity({
-            'entity': {
-                'guid': self.id,
-                'attributes': {
-                    'name': self.name,
-                    'qualifiedName': self.qualifiedName,
-                },
-                'typeName': self.entityType,
-            },
-            'referredEntities': None
-        })
+    def __str__(self):
+        return self.value
 
+    @property
+    def score(self):
+        return self.value["@search.score"]
 
-class Entity:
+    @property
+    def assetType(self):
+        return self.value['assetType'][0]
+
+    @property
+    def collectionId(self):
+        return self.value['collectionId']
+
+    @property
+    def domainId(self):
+        return self.value['domainId']
+
+    @property
+    def name(self):
+        return self.value['name']
+
+    @property
+    def id(self):
+        return self.value['id']
+
+    @property
+    def qualifiedName(self):
+        return self.value['qualifiedName']
+
+    @property
+    def entityType(self):
+        return self.value['entityType']
+
+    @name.setter
+    def name(self, value):
+        self.value['name'] = value
+
+class Entity(AbstractEntity):
     def __init__(self, body: dict):
+        super().__init__(body)
         self.entity = body['entity']
         self.referredEntities = body['referredEntities']
 

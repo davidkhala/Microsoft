@@ -1,11 +1,11 @@
 import assert from 'assert'
 import {Account} from '../account.js'
 import {DataMap} from "../data-map.js";
-import {typeName} from '../format/const.js'
+import {entityType} from '../format/const.js'
 import {JSONReadable} from '@davidkhala/light/format.js'
 import fs from 'fs'
 
-const {mssql: {view}} = typeName
+const {mssql: {view}} = entityType
 const tenantID = "c2a38aca-e9c7-4647-8dcd-9185476159ae"
 const subscription = "d02180af-0630-4747-ab1b-0d3b3c12dafb"
 const defaultAccountName = "admin-david"
@@ -53,12 +53,6 @@ describe('data map', function () {
 
     })
 
-    it('relation get', async () => {
-        const id = 'fc01fdae-c360-4c23-910a-39f6f6f60000'
-        const r = await dataMap.relationShow(id)
-        console.debug(r)
-
-    })
     it('relation set', async () => {
         const id = 'e2323179-19d1-475a-aeb3-8244507161cb'
         const columns = {
@@ -71,8 +65,12 @@ describe('data map', function () {
         const id = 'fc01fdae-c360-4c23-910a-39f6f6f60000'
         const r = await dataMap.entityShow(id)
         const {sources, sinks} = r.relationship
-        console.debug("-----all sources")
+
         console.debug(sources)
+        const relation_id = sources[0].relationshipGuid
+        const relation = await dataMap.relationShow(relation_id)
+        console.debug("------source[0]")
+        console.info(relation)
 
     })
 

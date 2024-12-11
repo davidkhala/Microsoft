@@ -15,9 +15,9 @@ class CatalogTestCase(unittest.TestCase):
         write_json(l, 'assets')
 
     def test_update(self):
-        guid = "bbc03f8d-4a4e-4413-9bf7-33016c7aa695"
+        l = self._catalog.assets()
+        guid = l[0]['id']
         e = self._catalog.get_entity(guid=guid)
-
         self._catalog.update_entity(e, guid=e.guid)
 
 
