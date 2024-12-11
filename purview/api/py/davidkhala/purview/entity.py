@@ -14,12 +14,10 @@ class AbstractEntity(dict):
     def qualifiedName(self):
         pass
 
-
     @property
     @abstractmethod
     def id(self):
         pass
-
 
     @property
     @abstractmethod
@@ -30,46 +28,43 @@ class AbstractEntity(dict):
 class Asset(AbstractEntity):
     def __init__(self, value: dict):
         super().__init__(value)
-        self.value = value
-
-    def __str__(self):
-        return self.value
 
     @property
     def score(self):
-        return self.value["@search.score"]
+        return self["@search.score"]
 
     @property
     def assetType(self):
-        return self.value['assetType'][0]
+        return self['assetType'][0]
 
     @property
     def collectionId(self):
-        return self.value['collectionId']
+        return self['collectionId']
 
     @property
     def domainId(self):
-        return self.value['domainId']
+        return self['domainId']
 
     @property
     def name(self):
-        return self.value['name']
+        return self['name']
 
     @property
     def id(self):
-        return self.value['id']
+        return self['id']
 
     @property
     def qualifiedName(self):
-        return self.value['qualifiedName']
+        return self['qualifiedName']
 
     @property
     def entityType(self):
-        return self.value['entityType']
+        return self['entityType']
 
     @name.setter
     def name(self, value):
-        self.value['name'] = value
+        self['name'] = value
+
 
 class Entity(AbstractEntity):
     def __init__(self, body: dict):
@@ -100,6 +95,15 @@ class Entity(AbstractEntity):
     @property
     def relationship(self):
         return self.entity['relationshipAttributes']
+
+    @property
+    def columns(self):
+        return self.relationship['columns']
+
+    @property
+    def column_names(self):
+        from davidkhala.syntax.js import Array
+        return Array(self.columns).map(lambda column: column['displayText'])
 
     def relation_by_source_id(self, guid):
         found = next((source for source in self.relationship['sources'] if source['guid'] == guid), None)

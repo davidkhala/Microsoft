@@ -3,6 +3,7 @@ import unittest
 from davidkhala.syntax.fs import write_json
 
 from davidkhala.purview import const, Catalog
+from davidkhala.purview.fabric.powerbi import DatabricksTable
 from davidkhala.purview.lineage import Lineage
 
 
@@ -69,11 +70,15 @@ class DatabricksTestcase(unittest.TestCase):
     def setUp(self):
         from davidkhala.databricks.workspace import Workspace
         from davidkhala.databricks.workspace.path import SDK
-        from davidkhala.purview.databricks import Databricks
+        from davidkhala.databricks.workspace.table import Table
+        # databricks objects
         self.w = Workspace.from_local()
         self.s = SDK.from_workspace(self.w)
-        self.c = Catalog()
-        self.adb = Databricks(self.c)
+        self.t = Table(self.w.client)
+        # purview objects
+        from davidkhala.purview.databricks import Databricks
+        self.l = Lineage()
+        self.adb = Databricks(self.l)
 
     def test_rename(self):
         for notebook in self.adb.notebooks():
@@ -81,9 +86,9 @@ class DatabricksTestcase(unittest.TestCase):
             if new_name:  # if found
                 self.adb.notebook_rename(notebook, new_name)
 
-    def test_table_link(self):
+    def test_powerbi_dataset_inspect(self):
         from davidkhala.purview.fabric.powerbi import PowerBI
-        bi = PowerBI(self.c)
+        bi = PowerBI(self.l)
         target_dataset = 'nyctlc'
         dataset = bi.dataset(name=target_dataset)
         write_json(dataset, target_dataset)
@@ -91,10 +96,26 @@ class DatabricksTestcase(unittest.TestCase):
         columns = dataset.columns()
         write_json(tables, target_dataset + '.tables')
         write_json(columns, target_dataset + '.columns')
-        return
-        for table in self.adb.tables():
-            if table.catalog == self.w.catalog:  # limit to current catalog
-                pass
+
+    def test_table_link(self):
+        from davidkhala.purview.fabric.powerbi import PowerBI
+        bi = PowerBI(self.l)
+        target_dataset = 'nyctlc'
+        dataset = bi.dataset(name=target_dataset)
+        tables = dataset.tables()
+        for table in tables:  # Assume they are all databricks tables
+            bi_table = DatabricksTable(table)
+            if self.t.exists(bi_table.full_name):
+                databricks_table = self.adb.table(bi_table.full_name)
+
+                self.l.table(bi_table, upstreams=[
+                    databricks_table.id,
+                ])
+                bi_table_entity = self.l.get_entity(guid=bi_table.id, min_ext_info=True)
+                self.l.column(
+                    bi_table_entity.relation_by_source_id(databricks_table.id),
+                    {key: None for key in bi_table_entity.column_names}
+                )
 
 
 if __name__ == '__main__':

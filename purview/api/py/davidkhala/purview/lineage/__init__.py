@@ -1,16 +1,16 @@
 import json
 
-from davidkhala.purview import Catalog, Entity, Relationship
+from davidkhala.purview import Catalog, Relationship, AbstractEntity
 
 
 class Lineage(Catalog):
 
-    def table(self, _entity: Entity, upstreams, downstreams):
+    def table(self, _entity: AbstractEntity, *, upstreams: list[str] = None, downstreams: list[str] = None):
         """
         create table lineage relationships
         :param _entity:
-        :param upstreams:
-        :param downstreams:
+        :param upstreams: list of guid
+        :param downstreams: list of guid
         :return:
         """
         sources = [{'guid': _id} for _id in upstreams] if upstreams else []
@@ -28,7 +28,7 @@ class Lineage(Catalog):
         """
         create column lineage relationships
         :param _relationship:
-        :param columns:
+        :param columns: list of column names
         :return:
         """
         column_mapping = json.dumps([
