@@ -94,3 +94,6 @@ class Source:
 
     def ls(self):
         return list(self.client.data_sources.list_all())
+
+    def rm(self, data_source_name):
+        return self.client.data_sources.delete(data_source_name)
