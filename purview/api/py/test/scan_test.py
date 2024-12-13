@@ -47,7 +47,7 @@ class RunTestCase(unittest.TestCase):
 
     def test_dry_run(self):
         run_id = self.run.start(wait_until_success=False)
-        self.run.cancel_rest(run_id)
+        self.run.cancel(run_id)
         print(run_id)
 
     def test_list_runs(self):

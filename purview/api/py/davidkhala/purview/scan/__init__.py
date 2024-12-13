@@ -71,13 +71,17 @@ class Run:
     def ls(self):
         return list(self.client.scan_result.list_scan_history(self.data_source_name, self.scan_name))
 
-    def cancel_rest(self, run_id):
-        """
-        sdk is too legacy to align with API
-        :param run_id:
-        :return:
-        """
+    def wait_until_running(self, run_id: str):
+        while True:
+            found = self.get(run_id)
+            if found['status'] == 'Running':
+                break
+            else:
+                assert found['status'] == 'Queued'
 
+    def cancel_rest(self, run_id):
+
+        self.wait_until_running(run_id)
         from azure.core.rest import HttpRequest
         url = f"{self.client._config.endpoint}/datasources/{self.data_source_name}/scans/{self.scan_name}/cancel?api-version=2023-09-01"
         request = HttpRequest("POST", url, json={
@@ -89,6 +93,7 @@ class Run:
         return run_id
 
     def cancel(self, run_id):
+        self.wait_until_running(run_id)
         receipt = self.client.scan_result.cancel_scan(self.data_source_name, self.scan_name, run_id)
         return Run.get_id(receipt)
 
