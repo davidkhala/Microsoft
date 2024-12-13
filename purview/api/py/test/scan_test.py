@@ -1,5 +1,7 @@
 import unittest
 
+from davidkhala.syntax.fs import write_json
+
 from davidkhala.purview.scan import Scan, Source, Run
 
 
@@ -29,8 +31,14 @@ class ScanTestCase(unittest.TestCase):
         for scan in self.scan.ls():
             print(scan.get('name'))
 
+    def test_filter(self):
+        r = self.scan.scope('Scan')
+        write_json(r, 'filters')
+
 
 from time import sleep
+
+
 class RunTestCase(unittest.TestCase):
     def setUp(self):
         data_source_name = 'AzureDatabricks'
@@ -38,17 +46,13 @@ class RunTestCase(unittest.TestCase):
         self.run = Run(data_source_name, scan_name)
 
     def test_dry_run(self):
-
         run_id = self.run.start(wait_until_success=False)
-        sleep(1)
-        r = self.run.cancel(run_id)
-        print(r)
+        self.run.cancel_rest(run_id)
+        print(run_id)
 
     def test_list_runs(self):
         runs = self.run.ls()
-        for run in runs:
-            print(run)
-            print("\n")
+        write_json(runs, 'runs')
 
     def test_run(self):
         """
@@ -56,8 +60,6 @@ class RunTestCase(unittest.TestCase):
         :return:
         """
         self.run.start(wait_until_success=True)
-
-
 
 
 if __name__ == '__main__':
