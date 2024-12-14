@@ -3,22 +3,22 @@
 ## [mannual lineage](https://learn.microsoft.com/en-us/purview/catalog-lineage-user-guide#manual-lineage)
 - > When you add lineage between two data assets, you can additionally configure the column level lineage.
   - prerequisite: Both current or upstream/downstream data asset should have a schema 
-  - > These asset types don't currently allow manual lineage because they support automated lineage:
-    - Azure Data Factory
-    - Synapse pipelines
-    - Power BI datasets
-    - Teradata stored procedure
-    - Azure SQL stored procedure
-    ![image](https://github.com/user-attachments/assets/43e74e6d-cfbd-486b-976f-ce3fa5641900)
-
+- > These asset types don't currently allow manual lineage because they support automated lineage:
+  - Azure Data Factory
+  - Synapse pipelines
+  - Power BI datasets
+  - Teradata stored procedure
+  - Azure SQL stored procedure
+  ![image](https://github.com/user-attachments/assets/43e74e6d-cfbd-486b-976f-ce3fa5641900)
+  - Solution: when manual lineage is not supported, customizing lineage via Purview API is still allowed  
 
 ## Azure Databricks
 - Purview目前只支持Table/View的lineage。Volume类型是不支持的。
   - There will not be lineage data if a notebook load CSV from Volume data
-- enable system schema `system.access`
+- enable system schema `system.access` by [run script](https://github.com/davidkhala/databricks-common/blob/main/cli/lineage.sh)
   - > Error: Only account admins can enable system schemas
-  - You need to assign `Account admin` role to user in Databricks [**Account Console** > **User management**](https://accounts.azuredatabricks.net/users)
-  - [run script](https://github.com/davidkhala/databricks-common/blob/main/cli/lineage.sh)
+    - You need to assign `Account admin` role to user in Databricks **Account Console** > **User management**
+  
 
 ## Azure SQL DB
 > Failed to AddOrUpdate lineage scan for <scan-name>: The current database for lineage scan is read-only. Please update with a writeable database.
@@ -38,9 +38,10 @@ Report
 
 Dataset
 > Manual lineage reporting is not supported for this asset type.
-- [Supported source for table level lineage](https://learn.microsoft.com/en-us/purview/how-to-lineage-powerbi#lineage-of-power-bi-artifacts-in-microsoft-purview)
-  - Azure SQL Database
-  - Azure Blob Storage
-  - Azure Data Lake Store (Gen1 & Gen2)
-- Supported source for column level lineage and transformations (except for Dataflows)
-  - Azure SQL Database
+- automated lineage 
+  - [Supported source for table level lineage](https://learn.microsoft.com/en-us/purview/how-to-lineage-powerbi#lineage-of-power-bi-artifacts-in-microsoft-purview)
+    - Azure SQL Database
+    - Azure Blob Storage
+    - Azure Data Lake Store (Gen1 & Gen2)
+  - Supported source for column level lineage and transformations (except for Dataflows)
+    - Azure SQL Database
