@@ -14,13 +14,12 @@ You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
     - **Group type**: `Security`
     - **Group name**: `Fabric Connect` or another arbitrary name
 2. Adding Purview's SAMI into this group `Fabric Connect` as **Member**
-    - Adding it as **Owner** is not allowed. It will introduce error in Test connection： `Exception when processing request: ErrorCode:(3871) UserErrorDataScanPowerBIBasicMetadataFailure.`
-
-4. Go to [tenant settings page of Fabric portal](https://app.fabric.microsoft.com/admin-portal/tenantSettings)
-5. Select **Admin API settings** > **Service principals can access read-only admin APIs**, type in `Fabric Connect` and click [Apply]
-6. Similarly, Enable **Admin API settings** > **Enhance admin APIs responses with detailed metadata** for the entire organization
-7. Similarly, Enable **Admin API settings** > **Enhance admin APIs responses with DAX and mashup expressions** for the entire organization
-8. Wait around 15 minutes before registering a scan and test connection (after you update above settings)
+    - Adding it as **Owner** is not allowed. It will introduce error in *Test connection*： `Exception when processing request: ErrorCode:(3871) UserErrorDataScanPowerBIBasicMetadataFailure.`
+3. Go to [tenant settings page of Fabric portal](https://app.fabric.microsoft.com/admin-portal/tenantSettings)
+4. Select **Admin API settings** > **Service principals can access read-only admin APIs**, type in `Fabric Connect` and click [Apply]
+5. Similarly, Enable **Admin API settings** > **Enhance admin APIs responses with detailed metadata** for the entire organization
+6. Similarly, Enable **Admin API settings** > **Enhance admin APIs responses with DAX and mashup expressions** for the entire organization
+7. Wait around 15 minutes before registering a scan and test connection (after you update above settings)
 
 
 ## Azure SQL DB
