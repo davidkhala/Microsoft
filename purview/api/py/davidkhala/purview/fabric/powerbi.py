@@ -74,8 +74,10 @@ class PowerBI:
 
     def dataset(self, *, name=None, qualified_name=None) -> Dataset | None:
         if not qualified_name:
+            found = self.find_dataset(name)
+            if not found:
+                return None
             qualified_name = self.find_dataset(name)['qualifiedName']
-
         return self.get_dataset(qualified_name)
 
     def get_dataset(self, qualified_name, min_ext_info=True) -> Dataset:

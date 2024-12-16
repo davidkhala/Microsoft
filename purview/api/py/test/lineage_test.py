@@ -83,13 +83,23 @@ class DatabricksTestcase(unittest.TestCase):
             if new_name:  # if found
                 self.adb.notebook_rename(notebook, new_name)
 
-    def test_powerbi_dataset_lineage(self):
+    def test_powerbi_dataset_lineage_desktop(self):
         from davidkhala.purview.fabric.powerbi import PowerBI
         target_dataset = 'nyctlc'
         dataset = PowerBI(self.l).dataset(name=target_dataset)
         from davidkhala.purview.lineage.weaver.powerbi import Builder
         builder = Builder(self.l, dataset)
-        builder.source_databricks(self.t, self.adb)
+        builder.source_databricks(self.t, self.adb, Builder.DatabricksStrategy.Desktop)
+        builder.build()
+
+    def test_powerbi_dataset_lineage_publish(self):
+        # by `Publish to Power BI workspace`
+        from davidkhala.purview.fabric.powerbi import PowerBI
+        target_dataset = 'az_databricks-sample'
+        dataset = PowerBI(self.l).dataset(name=target_dataset)
+        from davidkhala.purview.lineage.weaver.powerbi import Builder
+        builder = Builder(self.l, dataset)
+        builder.source_databricks(self.t, self.adb, Builder.DatabricksStrategy.Publish)
         builder.build()
 
 
