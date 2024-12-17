@@ -12,15 +12,15 @@ azure-identity = "*"
 azure-purview-catalog = "*"
 # for extras
 azure-purview-scanning = { version = "*", optional = true }
-davidkhala-databricks = { version = "*", extras = ["connect"], optional = true }
+davidkhala-utils = "*"
+
 
 [tool.poetry.group.dev.dependencies]
-davidkhala-utils = "*"
+davidkhala-databricks = { version = "*", extras = ["connect"] }
 
 
 [tool.poetry.extras]
 scan = ["azure-purview-scanning"]
-databricks = ["davidkhala-databricks"]
 
 [build-system]
 requires = ["poetry-core"]

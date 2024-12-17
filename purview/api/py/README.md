@@ -1,5 +1,10 @@
-# Python dependencies
+# dependencies
+Azure
 - `azure-purview-scanning`
-- `azure-purview-administration`
 - `azure-purview-catalog`
-- `azure-purview-account`
+- `azure-identity`
+- `azure-purview-administration` (TODO)
+- `azure-purview-account` (TODO)
+
+davidkhala
+- `davidkhala-utils`
