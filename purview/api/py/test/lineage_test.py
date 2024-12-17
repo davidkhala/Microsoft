@@ -67,11 +67,9 @@ class DatabricksTestcase(unittest.TestCase):
     def setUp(self):
         from davidkhala.databricks.workspace import Workspace
         from davidkhala.databricks.workspace.path import SDK
-        from davidkhala.databricks.workspace.table import Table
         # databricks objects
         self.w = Workspace.from_local()
         self.s = SDK.from_workspace(self.w)
-        self.t = Table(self.w.client)
         # purview objects
         from davidkhala.purview.databricks import Databricks
         self.l = Lineage()
@@ -87,9 +85,11 @@ class DatabricksTestcase(unittest.TestCase):
         from davidkhala.purview.fabric.powerbi import PowerBI
         target_dataset = 'nyctlc'
         dataset = PowerBI(self.l).dataset(name=target_dataset)
+        if not dataset:
+            raise Exception(f"dataset({target_dataset}) not found")
         from davidkhala.purview.lineage.weaver.powerbi import Builder
         builder = Builder(self.l, dataset)
-        builder.source_databricks(self.t, self.adb, Builder.DatabricksStrategy.Desktop)
+        builder.source_databricks(self.adb, Builder.DatabricksStrategy.Desktop)
         builder.build()
 
     def test_powerbi_dataset_lineage_publish(self):
@@ -97,9 +97,11 @@ class DatabricksTestcase(unittest.TestCase):
         from davidkhala.purview.fabric.powerbi import PowerBI
         target_dataset = 'az_databricks-sample'
         dataset = PowerBI(self.l).dataset(name=target_dataset)
+        if not dataset:
+            raise Exception(f"dataset({target_dataset}) not found")
         from davidkhala.purview.lineage.weaver.powerbi import Builder
         builder = Builder(self.l, dataset)
-        builder.source_databricks(self.t, self.adb, Builder.DatabricksStrategy.Publish)
+        builder.source_databricks(self.adb, Builder.DatabricksStrategy.Publish)
         builder.build()
 
 
