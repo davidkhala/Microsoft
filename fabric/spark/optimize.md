@@ -1,3 +1,4 @@
+[Optimize delta tables](https://learn.microsoft.com/en-us/training/modules/work-delta-lake-tables-fabric/3b-optimize-delta-tables)
 # small file problem
 Cause
 - Spark is a parallel-processing framework, with data stored multiple worker nodes.

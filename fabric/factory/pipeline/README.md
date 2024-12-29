@@ -1,6 +1,6 @@
-# (Data) Pipelines
+# Data Pipelines
 Similar to Databricks DLT and Azure Data Factory
-
+- Alternative to Dataflow Gen2
 > To create a pipeline based on a template, select the **Choose a task to start** tile  
 
 ## Activity
@@ -10,7 +10,7 @@ Pipelines encapsulate a sequence of *activities*
 ## Data transformation activities
 It includes 
 - simple **Copy Data** activities for data ingestion
-- **Data Flow** activities that encapsulate [dataflows (Gen2)](https://github.com/davidkhala/azure-utils/tree/main/data/factory#dataflows-gen2) for data transformations.
+- **Data Flow** activities that encapsulate [dataflows (Gen2)](../../flow/README.md) for data transformations.
 - **Notebook** activities to run a Spark notebook
 - **Stored procedure** activities to run SQL code
 - **Delete data** activities to delete existing data
