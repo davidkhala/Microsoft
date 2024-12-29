@@ -3,3 +3,6 @@ Code language: Fabric has a different set of magic commands to change language f
 - Databricks `%sql`: `%%sql`
 - Databricks `%md`: 
 - Databricks `%scala`: `%%spark`
+
+# built-in notebook charts
+- Similar to Databricks notebook **Visualization**
