@@ -20,7 +20,7 @@ def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalog
     if workspace_id:
         t_df.filter(col("workspace_id") == workspace_id)
 
-    t_df.select(
+    t_df[
         "workspace_id",
         "entity_type",
         "entity_id",
@@ -30,12 +30,12 @@ def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalog
         "target_table_full_name",
         "target_type",
         "event_time"
-    ).limit(100000)
+    ].limit(100000)
 
     # Read the column_lineage DataFrame
     column_lineage_df = spark.table("system.access.column_lineage")
 
-    c_df = column_lineage_df.select(
+    c_df = column_lineage_df[
         "entity_type",
         "entity_id",
         "entity_run_id",
@@ -43,7 +43,7 @@ def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalog
         "source_column_name",
         "target_table_full_name",
         "target_column_name"
-    )
+    ]
 
     # Perform the left join
     result_df = t_df.join(
@@ -56,7 +56,7 @@ def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalog
     )
 
     # Select the final columns
-    final_df = result_df.select(
+    final_df = result_df[
         t_df.workspace_id,
         t_df.entity_type,
         t_df.entity_id,
@@ -68,6 +68,6 @@ def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalog
         t_df.event_time,
         c_df.source_column_name,
         c_df.target_column_name
-    )
+    ]
 
     return final_df
