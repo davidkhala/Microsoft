@@ -8,6 +8,7 @@
 Fabric is a combination of workloads
 - [PowerBI](https://github.com/davidkhala/power/tree/main/bi)
 - Data factory: combining Power Query with the scale of Azure Data Factory
+  - [Data pipelines](./Pipelines/README.md)
 - Data Activator: ?
 - Industry Solutions: ?
 - Real-Time Intelligence: ?
