@@ -9,9 +9,9 @@ Fabric is a combination of workloads
 - [PowerBI](https://github.com/davidkhala/power/tree/main/bi)
 - Data factory: combining Power Query with the scale of Azure Data Factory
   - [Data pipelines](factory/pipeline/README.md)
-- Data Activator: ?
 - Industry Solutions: ?
-- Real-Time Intelligence: ?
+- Real-Time Intelligence
+  - Data Activator: ?
 - Synapse
   - Data Engineering: a Spark platform
   - Data Warehouse

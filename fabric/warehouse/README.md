@@ -8,7 +8,6 @@ Provion in either
 - **create hub**
 - **workspace**
 
-Item Permission: grant access to individual warehouses
 
 ## Clone tables
 
