@@ -1,7 +1,18 @@
 # Data Pipelines
-Similar to Databricks DLT and Azure Data Factory
+low-code experience
+- Similar to Databricks DLT and Azure Data Factory
 - Alternative to Dataflow Gen2
-> To create a pipeline based on a template, select the **Choose a task to start** tile  
+- > Most of the functionality of data pipelines comes from Azure Data Factory
+
+# Provision
+1. Entrances
+    - From the workspace: Select **+ New**, then select **Data pipeline**.
+    - From the warehouse asset: Select **Get Data**, and then **New data pipeline**.
+2. [Start building your data pipeline]
+    - from scratch: Select the **Add pipeline activity** tile
+    - [Copy data](./activity/CopyData.md)
+    - based on a template: Select the **Choose a task to start** tile
+
 
 ## Activity
 Pipelines encapsulate a sequence of *activities*
