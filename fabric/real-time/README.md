@@ -27,6 +27,9 @@ a collection of tables, stored functions, materialized views, and shortcuts.
 ### KQL queryset
 work with KQL database tables
 
+### [OneLake Availability](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-house-onelake-availability#how-it-works)
+- Create a logical(soft) copy of KQL database in OneLake
+  - There's no additional storage cost
 
 ## *real-time dashboard*
 
