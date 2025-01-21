@@ -16,7 +16,8 @@ Fabric is a combination of workloads
   - Data Engineering: a Spark platform
   - Data Warehouse
   - Data Science: Azure Machine Learning + Spark
-  - Real-Time Intelligence 
+  - Real-Time Intelligence
+     - https://blog.fabric.microsoft.com/en-in/blog/sense-analyze-and-generate-insights-with-synapse-real-time-analytics-in-microsoft-fabric?ft=05-2023:date
 
 > Fabric is built on Power BI and Azure Data Lake Storage, with other capabilities included. 
 
