@@ -11,7 +11,7 @@ Fabric is a combination of workloads
   - [Data pipelines](factory/pipeline/README.md)
 - Industry Solutions: ?
 - Real-Time Intelligence
-  - Data Activator: ?
+  - new UI for classic Azure Stream Analytics 
 - Synapse
   - Data Engineering: a Spark platform
   - Data Warehouse
