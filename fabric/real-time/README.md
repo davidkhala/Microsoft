@@ -1,8 +1,9 @@
 # Real-Time Intelligence
 
-[real-Time data analytics](https://github.com/davidkhala/BI-collection/wiki/Real%E2%80%90time-analytics)
+[What's Real-Time data analytics](https://github.com/davidkhala/BI-collection/wiki/Real%E2%80%90time-analytics)
 
 ![fabric](https://learn.microsoft.com/en-us/training/wwl/get-started-kusto-fabric/media/real-time-intelligence-core.png)
+
 
 ## *eventstream*
 
