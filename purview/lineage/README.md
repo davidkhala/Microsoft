@@ -1,16 +1,5 @@
 # Lineage
 
-## [mannual lineage](https://learn.microsoft.com/en-us/purview/catalog-lineage-user-guide#manual-lineage)
-- > When you add lineage between two data assets, you can additionally configure the column level lineage.
-  - prerequisite: Both current or upstream/downstream data asset should have a schema 
-- > These asset types don't currently allow manual lineage because they support automated lineage:
-  - Azure Data Factory
-  - Synapse pipelines
-  - Power BI datasets
-  - Teradata stored procedure
-  - Azure SQL stored procedure
-  ![image](https://github.com/user-attachments/assets/43e74e6d-cfbd-486b-976f-ce3fa5641900)
-  - Solution: when manual lineage is not supported, customizing lineage via Purview API is still allowed  
 
 ## Azure Databricks
 - Purview目前只支持Table/View的lineage。Volume类型是不支持的。
