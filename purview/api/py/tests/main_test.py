@@ -2,7 +2,7 @@ import unittest
 
 from davidkhala.syntax.fs import write_json
 
-from davidkhala.purview import Catalog
+from davidkhala.microsoft.purview import Catalog
 
 
 class CatalogTestCase(unittest.TestCase):

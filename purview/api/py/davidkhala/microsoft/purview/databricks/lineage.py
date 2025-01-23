@@ -1,7 +1,5 @@
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import col
-
-
 def lineage_data(spark: SparkSession, source_catalogs: list[str], target_catalogs: list[str] = None,
                  *, workspace_id: str) -> DataFrame:
     table_lineage_df = spark.table("system.access.table_lineage")

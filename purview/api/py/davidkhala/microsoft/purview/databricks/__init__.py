@@ -1,6 +1,6 @@
-from davidkhala.purview import Catalog
-from davidkhala.purview.const import entityType
-from davidkhala.purview.entity import Asset
+from davidkhala.microsoft.purview import Catalog
+from davidkhala.microsoft.purview.const import entityType
+from davidkhala.microsoft.purview.entity import Asset
 
 
 class Notebook(Asset):

@@ -1,13 +1,12 @@
+from azure.core.credentials import TokenCredential
 from azure.identity import DefaultAzureCredential
 from azure.purview.catalog import PurviewCatalogClient
 
-from davidkhala.purview.entity import Entity, AbstractEntity
-from davidkhala.purview.relationship import Relationship
+from davidkhala.microsoft.purview.entity import Entity, AbstractEntity
 
 
 class Catalog:
-    def __init__(self, **kwargs):
-        credentials = DefaultAzureCredential()
+    def __init__(self, credentials: TokenCredential = DefaultAzureCredential(), **kwargs):
         self.client = PurviewCatalogClient("https://api.purview-service.microsoft.com", credentials, **kwargs)
 
     def assets(self, options: dict = None) -> list[dict]:

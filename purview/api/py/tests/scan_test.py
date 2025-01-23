@@ -2,7 +2,7 @@ import unittest
 
 from davidkhala.syntax.fs import write_json
 
-from davidkhala.purview.scan import Scan, Source, Run
+from davidkhala.microsoft.purview import Scan, Source, Run
 
 
 class SourceTestCase(unittest.TestCase):
@@ -34,9 +34,6 @@ class ScanTestCase(unittest.TestCase):
     def test_filter(self):
         r = self.scan.scope('Scan')
         write_json(r, 'filters')
-
-
-from time import sleep
 
 
 class RunTestCase(unittest.TestCase):

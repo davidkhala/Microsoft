@@ -1,6 +1,6 @@
-from davidkhala.purview import Catalog, AbstractEntity
-from davidkhala.purview.const import entityType
-from davidkhala.purview.entity import Asset, Entity
+from davidkhala.microsoft.purview import Catalog, AbstractEntity
+from davidkhala.microsoft.purview.const import entityType
+from davidkhala.microsoft.purview.entity import Asset, Entity
 
 
 class Table(AbstractEntity):

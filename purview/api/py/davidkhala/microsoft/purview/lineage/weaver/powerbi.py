@@ -1,14 +1,14 @@
 import enum
 
-from davidkhala.purview.databricks import Databricks
-from davidkhala.purview.fabric.powerbi import Dataset, Table as PowerBITable
-from davidkhala.purview.lineage import Lineage
+from davidkhala.microsoft.purview.databricks import Databricks
+from davidkhala.microsoft.purview.fabric.powerbi import Dataset, Table as PowerBITable
+from davidkhala.microsoft.purview.lineage import Lineage
 
 
 class Builder:
-    def __init__(self, l: Lineage, dataset: Dataset):
-        self.dataset = dataset
-        self.l = l
+    source:dict
+    lineage:Lineage
+    dataset:Dataset
 
     class DatabricksStrategy(enum.Enum):
         Publish = None  # Power BI dataset created `Publish to Power BI workspace`
@@ -49,15 +49,15 @@ class Builder:
                     bi_table = DatabricksTable(table, catalog=_catalog, schema=_schema)
 
                 databricks_table = self.source['purview'].table(bi_table.full_name)
-                databricks_table_entity = self.l.get_entity(guid=databricks_table.id, min_ext_info=True)
-                bi_table_entity = self.l.get_entity(guid=bi_table.id, min_ext_info=True)
+                databricks_table_entity = self.lineage.get_entity(guid=databricks_table.id, min_ext_info=True)
+                bi_table_entity = self.lineage.get_entity(guid=bi_table.id, min_ext_info=True)
                 if not set(bi_table_entity.column_names) == set(databricks_table_entity.column_names):
                     # column name matching
                     continue
-                self.l.table(bi_table, upstreams=[
+                self.lineage.table(bi_table, upstreams=[
                     databricks_table.id,
                 ])
-                self.l.column(
+                self.lineage.column(
                     bi_table_entity.relation_by_source_id(databricks_table.id),
                     {key: None for key in bi_table_entity.column_names}
                 )

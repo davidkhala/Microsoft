@@ -1,6 +1,7 @@
 import json
 
-from davidkhala.purview import Catalog, Relationship, AbstractEntity
+from davidkhala.microsoft.purview import Catalog, AbstractEntity
+from davidkhala.microsoft.purview.relationship import Relationship
 
 
 class Lineage(Catalog):

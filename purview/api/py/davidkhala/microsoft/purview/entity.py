@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from davidkhala.purview.relationship import Relationship
+from davidkhala.microsoft.purview.relationship import Relationship
 
 
 class AbstractEntity(dict):

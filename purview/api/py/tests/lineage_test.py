@@ -1,7 +1,7 @@
 import unittest
 
-from davidkhala.purview import const
-from davidkhala.purview.lineage import Lineage
+from davidkhala.microsoft.purview import Lineage
+from davidkhala.microsoft.purview import const
 
 
 class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
@@ -62,6 +62,10 @@ class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
         })
 
 
+from davidkhala.microsoft.purview.fabric.powerbi import PowerBI
+from davidkhala.microsoft.purview.lineage.weaver.powerbi import Builder
+
+
 class DatabricksTestcase(unittest.TestCase):
 
     def setUp(self):
@@ -71,7 +75,7 @@ class DatabricksTestcase(unittest.TestCase):
         self.w = Workspace.from_local()
         self.s = SDK.from_workspace(self.w)
         # purview objects
-        from davidkhala.purview.databricks import Databricks
+        from davidkhala.microsoft.purview.databricks import Databricks
         self.l = Lineage()
         self.adb = Databricks(self.l)
 
@@ -82,25 +86,27 @@ class DatabricksTestcase(unittest.TestCase):
                 self.adb.notebook_rename(notebook, new_name)
 
     def test_powerbi_dataset_lineage_desktop(self):
-        from davidkhala.purview.fabric.powerbi import PowerBI
+
         target_dataset = 'nyctlc'
         dataset = PowerBI(self.l).dataset(name=target_dataset)
         if not dataset:
             raise Exception(f"dataset({target_dataset}) not found")
-        from davidkhala.purview.lineage.weaver.powerbi import Builder
-        builder = Builder(self.l, dataset)
+        builder = Builder()
+        builder.lineage = self.l
+        builder.dataset = dataset
         builder.source_databricks(self.adb, Builder.DatabricksStrategy.Desktop)
         builder.build()
 
     def test_powerbi_dataset_lineage_publish(self):
         # by `Publish to Power BI workspace`
-        from davidkhala.purview.fabric.powerbi import PowerBI
         target_dataset = 'az_databricks-sample'
         dataset = PowerBI(self.l).dataset(name=target_dataset)
         if not dataset:
             raise Exception(f"dataset({target_dataset}) not found")
-        from davidkhala.purview.lineage.weaver.powerbi import Builder
-        builder = Builder(self.l, dataset)
+
+        builder = Builder()
+        builder.lineage = self.l
+        builder.dataset = dataset
         builder.source_databricks(self.adb, Builder.DatabricksStrategy.Publish)
         builder.build()
 
