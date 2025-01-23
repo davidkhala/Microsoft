@@ -102,8 +102,7 @@ class Entity(AbstractEntity):
 
     @property
     def column_names(self):
-        from davidkhala.syntax.js import Array
-        return Array(self.columns).map(lambda column: column['displayText'])
+        return list(map(lambda column: column['displayText'], self.columns))
 
     def relation_by_source_id(self, guid):
         found = next((source for source in self.relationship['sources'] if source['guid'] == guid), None)

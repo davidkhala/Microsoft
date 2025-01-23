@@ -1,5 +1,3 @@
-from davidkhala.syntax.js import Array
-
 from davidkhala.purview import Catalog, AbstractEntity
 from davidkhala.purview.const import entityType
 from davidkhala.purview.entity import Asset, Entity
@@ -35,8 +33,8 @@ class Dataset(Entity):
     def __init__(self, body: dict):
         super().__init__(body)
 
-    def tables(self) -> Array[dict]:
-        return Array(self.referredEntities.values()).filter(lambda e: e['typeName'] == entityType['powerbi']['table'])
+    def tables(self) -> list[dict]:
+        return list(filter(lambda e: e['typeName'] == entityType['powerbi']['table'], self.referredEntities.values()))
 
 
 class PowerBI:

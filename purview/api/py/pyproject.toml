@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "davidkhala.purview"
-version = "0.0.3"
+name = "davidkhala.microsoft.purview"
+version = "0.0.0"
 description = ""
 authors = ["David Liu <david-khala@hotmail.com>"]
 readme = "README.md"
@@ -12,15 +12,15 @@ azure-identity = "*"
 azure-purview-catalog = "*"
 # for extras
 azure-purview-scanning = { version = "*", optional = true }
-davidkhala-utils = "*"
-
+davidkhala-databricks = { version = "*", optional = true }
 
 [tool.poetry.group.dev.dependencies]
-davidkhala-databricks = { version = "*", extras = ["connect"] }
-
+pytest = "*"
+davidkhala-utils = "*"
 
 [tool.poetry.extras]
 scan = ["azure-purview-scanning"]
+databricks = ["davidkhala-databricks"]
 
 [build-system]
 requires = ["poetry-core"]

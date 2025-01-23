@@ -1,5 +1,3 @@
-from davidkhala.syntax.js import Array
-
 from davidkhala.purview import Catalog
 from davidkhala.purview.const import entityType
 from davidkhala.purview.entity import Asset
@@ -54,11 +52,11 @@ class Databricks:
 
         catalog, schema, table = full_name.split('.')
 
-        qualifiedName_filters = Array([catalog, schema, table]).map(lambda token: {
+        qualifiedName_filters = list(map(lambda token: {
             "attributeName": "qualifiedName",
             "operator": "contains",
             "attributeValue": token
-        })
+        }, [catalog, schema, table]))
 
         found = self.c.assets({
             "filter": {
