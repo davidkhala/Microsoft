@@ -26,3 +26,7 @@ activities that aren't data governance specific
 - registering and scanning of data sources
 - storing technical data assets in a common platform in the form of tables, files, datasets, semantic models, AI models, reports, dashboards, etc.
 
+## data governance processing unit (DGPU)
+a fully managed compute unit used to run compute heavy capabilities such as data quality and data health management.
+- Each DGPU is 60 minutes of compute time 
+  
