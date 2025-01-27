@@ -1,7 +1,7 @@
 import unittest
 
-from davidkhala.microsoft.purview import Lineage
 from davidkhala.microsoft.purview import const
+from davidkhala.microsoft.purview.lineage import Lineage
 
 
 class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
@@ -31,12 +31,13 @@ class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
         )
 
     def test_table2view_lineage(self):
-        self.l.table(self.vProductAndDescription, [
-            self.Product.guid,
-            self.ProductDescription.guid,
-            self.ProductModel.guid,
-            self.ProductModelProductDescription.guid,
-        ], None)
+        self.l.table(self.vProductAndDescription,
+                     upstreams=[
+                         self.Product.guid,
+                         self.ProductDescription.guid,
+                         self.ProductModel.guid,
+                         self.ProductModelProductDescription.guid,
+                     ])
 
     def test_column2view_lineage(self):
         r_Product = self.vProductAndDescription.relation_by_source_id(self.Product.guid)

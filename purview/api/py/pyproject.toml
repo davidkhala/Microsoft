@@ -18,6 +18,7 @@ davidkhala-databricks = { version = "*", optional = true }
 pytest = "*"
 davidkhala-utils = "*"
 
+pyinstaller = "*"
 [tool.poetry.extras]
 scan = ["azure-purview-scanning"]
 databricks = ["davidkhala-databricks"]
