@@ -86,30 +86,25 @@ class DatabricksTestcase(unittest.TestCase):
             if new_name:  # if found
                 self.adb.notebook_rename(notebook, new_name)
 
-    def test_powerbi_dataset_lineage_desktop(self):
-
-        target_dataset = 'nyctlc'
+    def powerbi_dataset_lineage(self, target_dataset, strategy: Builder.DatabricksStrategy):
         dataset = PowerBI(self.l).dataset(name=target_dataset)
         if not dataset:
             raise Exception(f"dataset({target_dataset}) not found")
         builder = Builder()
         builder.lineage = self.l
         builder.dataset = dataset
-        builder.source_databricks(self.adb, Builder.DatabricksStrategy.Desktop)
+        builder.source_databricks(self.adb, strategy)
         builder.build()
+
+    def test_powerbi_dataset_lineage_desktop(self):
+
+        target_dataset = 'nyctlc'
+        self.powerbi_dataset_lineage(target_dataset, Builder.DatabricksStrategy.Desktop)
 
     def test_powerbi_dataset_lineage_publish(self):
         # by `Publish to Power BI workspace`
         target_dataset = 'az_databricks-sample'
-        dataset = PowerBI(self.l).dataset(name=target_dataset)
-        if not dataset:
-            raise Exception(f"dataset({target_dataset}) not found")
-
-        builder = Builder()
-        builder.lineage = self.l
-        builder.dataset = dataset
-        builder.source_databricks(self.adb, Builder.DatabricksStrategy.Publish)
-        builder.build()
+        self.powerbi_dataset_lineage(target_dataset, Builder.DatabricksStrategy.Publish)
 
 
 if __name__ == '__main__':

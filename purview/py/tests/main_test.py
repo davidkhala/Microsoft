@@ -1,14 +1,14 @@
 import unittest
 
 from davidkhala.syntax.fs import write_json
-
 from davidkhala.microsoft.purview import Catalog
+from tests.ci import credentials
 
 
 class CatalogTestCase(unittest.TestCase):
 
     def setUp(self):
-        self._catalog = Catalog()
+        self._catalog = Catalog(credentials())
 
     def test_list(self):
         l = self._catalog.assets()

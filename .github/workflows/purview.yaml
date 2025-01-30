@@ -1,0 +1,16 @@
+on: workflow_dispatch
+
+
+jobs:
+  test:
+    environment: david-khala@hotmail.com
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - uses: davidkhala/poetry-buildpack@main
+      with:
+        working-directory: purview/py
+        test-entry-point: pytest
+        tests: purview/py/tests
+      env:
+        CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}

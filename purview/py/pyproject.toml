@@ -13,6 +13,7 @@ azure-purview-catalog = "*"
 # for extras
 azure-purview-scanning = { version = "*", optional = true }
 davidkhala-databricks = { version = "*", optional = true }
+davidkhala-azure = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
