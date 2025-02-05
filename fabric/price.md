@@ -6,3 +6,11 @@
 https://learn.microsoft.com/en-us/power-bi/developer/embedded/embedded-capacity#sku-computing-power
 - A: Power BI Embedded
 - EM/P: Power BI Premium
+
+Saving options
+- PAYG: [Delete a capacity](https://learn.microsoft.com/en-us/fabric/admin/capacity-settings?tabs=fabric-capacity#delete-a-capacity)
+  - > non-Power BI Fabric items in workspaces assigned to the capacity are soft deleted
+    - > These Fabric items can still be seen in Onelake Data Hub and in the workspace list, but can't be opened or used.
+    - Restore: If the workspace that holds these items is associated to a capacity from the **same region** as the deleted capacity **within seven days**, the deleted items are restored.
+  - Delete "Power BI Embedded" capcity will hard delete Fabric items in associated workspace
+  
