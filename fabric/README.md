@@ -3,7 +3,8 @@
  
 [portal](https://app.fabric.microsoft.com/)
 - > Fabric administration is centralized in the [Admin portal](https://app.fabric.microsoft.com/admin-portal/tenantSettings).
-
+- [portal: Help + Support](https://app.powerbi.com/admin-portal/supportCenter) is dedicated for Fabric.
+  - You cannot use Azure portal to create service request
 
 Fabric is a combination of workloads
 - [PowerBI](https://github.com/davidkhala/power/tree/main/bi)
