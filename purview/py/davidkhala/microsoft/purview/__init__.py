@@ -1,7 +1,15 @@
+from abc import abstractmethod
+
 from azure.core.credentials import TokenCredential
 from azure.purview.catalog import PurviewCatalogClient
 
-from davidkhala.microsoft.purview.entity import Entity, AbstractEntity
+from davidkhala.microsoft.purview.entity import Entity, AbstractEntity, Asset
+
+
+class TableWare:
+    @abstractmethod
+    def table(self, full_name) -> Asset | None:
+        ...
 
 
 class Catalog:

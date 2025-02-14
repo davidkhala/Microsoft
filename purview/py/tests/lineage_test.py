@@ -1,13 +1,18 @@
 import unittest
 
+from davidkhala.azure.ci import credentials
+
 from davidkhala.microsoft.purview import const
+from davidkhala.microsoft.purview.databricks.cli import powerbi_dataset_lineage
 from davidkhala.microsoft.purview.lineage import Lineage
+
+auth = credentials()
 
 
 class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.l = Lineage()
+        self.l = Lineage(auth)
         db_endpoint = 'mssql://always-free.database.windows.net/app-kyndryl-hk'
 
         targetViewName = db_endpoint + '/SalesLT/vProductAndDescription'
@@ -63,48 +68,25 @@ class AzureSQLDBSampleDatasetTestCase(unittest.TestCase):
         })
 
 
-from davidkhala.microsoft.purview.fabric.powerbi import PowerBI
 from davidkhala.microsoft.purview.lineage.weaver.powerbi import Builder
 
 
 class DatabricksTestcase(unittest.TestCase):
 
-    def setUp(self):
-        from davidkhala.databricks.workspace import Workspace
-        from davidkhala.databricks.workspace.path import SDK
-        # databricks objects
-        self.w = Workspace.from_local()
-        self.s = SDK.from_workspace(self.w)
-        # purview objects
-        from davidkhala.microsoft.purview.databricks import Databricks
-        self.l = Lineage()
-        self.adb = Databricks(self.l)
-
     def test_rename(self):
-        for notebook in self.adb.notebooks():
-            new_name = self.s.get_by(notebook_id=notebook.notebook_id)
-            if new_name:  # if found
-                self.adb.notebook_rename(notebook, new_name)
-
-    def powerbi_dataset_lineage(self, target_dataset, strategy: Builder.DatabricksStrategy):
-        dataset = PowerBI(self.l).dataset(name=target_dataset)
-        if not dataset:
-            raise Exception(f"dataset({target_dataset}) not found")
-        builder = Builder()
-        builder.lineage = self.l
-        builder.dataset = dataset
-        builder.source_databricks(self.adb, strategy)
-        builder.build()
+        from davidkhala.microsoft.purview.databricks.cli import rename
+        from davidkhala.databricks.workspace import Workspace
+        w = Workspace.from_local()
+        rename(w, auth)
 
     def test_powerbi_dataset_lineage_desktop(self):
-
         target_dataset = 'nyctlc'
-        self.powerbi_dataset_lineage(target_dataset, Builder.DatabricksStrategy.Desktop)
+        powerbi_dataset_lineage(auth, target_dataset, Builder.DatabricksStrategy.Desktop)
 
     def test_powerbi_dataset_lineage_publish(self):
         # by `Publish to Power BI workspace`
         target_dataset = 'az_databricks-sample'
-        self.powerbi_dataset_lineage(target_dataset, Builder.DatabricksStrategy.Publish)
+        powerbi_dataset_lineage(auth, target_dataset, Builder.DatabricksStrategy.Publish)
 
 
 if __name__ == '__main__':

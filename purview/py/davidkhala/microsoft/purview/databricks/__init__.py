@@ -1,4 +1,4 @@
-from davidkhala.microsoft.purview import Catalog
+from davidkhala.microsoft.purview import Catalog, TableWare
 from davidkhala.microsoft.purview.const import entityType
 from davidkhala.microsoft.purview.entity import Asset
 
@@ -28,7 +28,7 @@ class Table(Asset):
         return self.qualifiedName.split('/')[-5]
 
 
-class Databricks:
+class Databricks(TableWare):
     def __init__(self, c: Catalog):
         self.c = c
 
@@ -52,7 +52,7 @@ class Databricks:
 
         catalog, schema, table = full_name.split('.')
 
-        qualifiedName_filters = list(map(lambda token: {
+        qualified_name_filters = list(map(lambda token: {
             "attributeName": "qualifiedName",
             "operator": "contains",
             "attributeValue": token
@@ -67,7 +67,7 @@ class Databricks:
                         "attributeValue": table
                     },
                     {"entityType": entityType['databricks']['table']},
-                    *qualifiedName_filters,
+                    *qualified_name_filters,
                 ]
             }
         })

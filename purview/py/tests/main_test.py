@@ -1,8 +1,8 @@
 import unittest
 
+from davidkhala.azure.ci import credentials
 from davidkhala.syntax.fs import write_json
 from davidkhala.microsoft.purview import Catalog
-from tests.ci import credentials
 
 
 class CatalogTestCase(unittest.TestCase):
