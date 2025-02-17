@@ -14,3 +14,18 @@ jobs:
         tests: purview/py/tests
       env:
         CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+  publish:
+    runs-on: windows-latest
+        
+    steps:
+      - uses: actions/checkout@main
+      - uses: davidkhala/poetry-buildpack@main
+        with:
+          working-directory: purview/py
+      - run: poetry run build
+        working-directory: purview/py
+      - uses: softprops/action-gh-release@master
+        with:
+          files: |
+            purview/py/dist/cli.exe
+          

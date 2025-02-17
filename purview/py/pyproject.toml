@@ -6,8 +6,9 @@ authors = ["David Liu <david-khala@hotmail.com>"]
 readme = "README.md"
 packages = [{ include = "davidkhala" }]
 
+
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.12, <3.14"
 azure-identity = "*"
 azure-purview-catalog = "*"
 # for extras
@@ -17,9 +18,11 @@ davidkhala-azure = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
-davidkhala-utils = "*"
+davidkhala-utils = { version = "*", extras = ['build'] }
 
-pyinstaller = "*"
+[tool.poetry.scripts]
+build = "build:build"
+clean = "build:clean"
 [tool.poetry.extras]
 scan = ["azure-purview-scanning"]
 databricks = ["davidkhala-databricks"]
