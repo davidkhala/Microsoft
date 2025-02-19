@@ -21,8 +21,8 @@ pytest = "*"
 davidkhala-utils = { version = "*", extras = ['build'] }
 
 [tool.poetry.scripts]
-build = "build:build"
-clean = "build:clean"
+build = "cli:build"
+clean = "cli:clean"
 [tool.poetry.extras]
 scan = ["azure-purview-scanning"]
 databricks = ["davidkhala-databricks"]

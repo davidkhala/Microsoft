@@ -15,7 +15,3 @@ def build():
 
 def clean():
     i.clean(True)
-
-
-if __name__ == "__main__":
-    build()
