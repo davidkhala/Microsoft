@@ -36,6 +36,9 @@ class Dataset(Entity):
     def tables(self) -> list[dict]:
         return list(filter(lambda e: e['typeName'] == entityType['powerbi']['table'], self.referredEntities.values()))
 
+    @property
+    def displayName(self):
+        return self.entity['attributes']['displayName']
 
 class PowerBI:
 

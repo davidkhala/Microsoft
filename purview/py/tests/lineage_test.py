@@ -85,7 +85,7 @@ class DatabricksTestcase(unittest.TestCase):
 
     def test_powerbi_dataset_lineage_publish(self):
         # by `Publish to Power BI workspace`
-        target_dataset = 'az_databricks-sample'
+        target_dataset = 'az_databricks-default'
         powerbi_dataset_lineage(auth, target_dataset, Builder.DatabricksStrategy.Publish)
 
 

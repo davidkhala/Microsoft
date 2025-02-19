@@ -1,9 +1,9 @@
 import enum
 
 from davidkhala.microsoft.purview import TableWare
-from davidkhala.microsoft.purview.databricks import Databricks
 from davidkhala.microsoft.purview.fabric.powerbi import Dataset, Table as PowerBITable
 from davidkhala.microsoft.purview.lineage import Lineage
+from davidkhala.microsoft.purview.relationship import Relationship
 
 
 class DatabricksTable(PowerBITable):
@@ -14,7 +14,9 @@ class DatabricksTable(PowerBITable):
             self.catalog, self.schema, self.table = self.name.replace("`", "").split()
         else:
             # other cases
-            self.catalog, self.schema = [catalog, schema]
+            self.catalog = catalog
+            self.schema = schema
+            self.table = self.name
 
     @property
     def full_name(self):
@@ -45,12 +47,12 @@ class Builder:
                 strategy = self.source['strategy']
                 print(self.source['type'], 'table.count()', tables.__len__())
                 for table in tables:  # Assume they are all databricks tables
-                    if strategy == Builder.DatabricksStrategy.Desktop:
-                        bi_table = DatabricksTable(table)
-                    else:
-                        assert strategy == Builder.DatabricksStrategy.Publish
-                        _catalog, _schema = self.dataset.name.split('-')
-                        bi_table = DatabricksTable(table, catalog=_catalog, schema=_schema)
+                    match strategy:
+                        case Builder.DatabricksStrategy.Desktop:
+                            bi_table = DatabricksTable(table)
+                        case Builder.DatabricksStrategy.Publish:
+                            _catalog, _schema = self.dataset.displayName.split('-')
+                            bi_table = DatabricksTable(table, catalog=_catalog, schema=_schema)
 
                     databricks_table = self.source['purview'].table(bi_table.full_name)
                     databricks_table_entity = self.lineage.get_entity(guid=databricks_table.id, min_ext_info=True)
@@ -61,7 +63,15 @@ class Builder:
                     self.lineage.table(bi_table, upstreams=[
                         databricks_table.id,
                     ])
+                    relationship: Relationship | None = bi_table_entity.relation_by_source_id(databricks_table.id)
+                    count = 0
+                    while not relationship:
+                        from time import sleep
+                        sleep(1)
+                        relationship = bi_table_entity.relation_by_source_id(databricks_table.id)
+                        count += 1
+                        print('wait until relationship ready...' + str(count))
                     self.lineage.column(
-                        bi_table_entity.relation_by_source_id(databricks_table.id),
+                        relationship,
                         {key: None for key in bi_table_entity.column_names}
                     )
