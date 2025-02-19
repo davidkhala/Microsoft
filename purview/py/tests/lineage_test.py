@@ -1,5 +1,7 @@
+import os
 import unittest
 
+from databricks.sdk import WorkspaceClient
 from davidkhala.azure.ci import credentials
 
 from davidkhala.microsoft.purview import const
@@ -76,7 +78,11 @@ class DatabricksTestcase(unittest.TestCase):
     def test_rename(self):
         from davidkhala.microsoft.purview.databricks.cli import rename
         from davidkhala.databricks.workspace import Workspace
-        w = Workspace.from_local()
+        token = os.environ.get('DATABRICKS_TOKEN')
+        if token:
+            w = Workspace(WorkspaceClient(token=token, host=os.environ.get('DATABRICKS_HOST')))
+        else:
+            w = Workspace.from_local()
         rename(w, auth)
 
     def test_powerbi_dataset_lineage_desktop(self):
