@@ -1,14 +1,22 @@
 import unittest
 
+from davidkhala.azure import default_scopes
 from davidkhala.azure.ci import credentials
 from davidkhala.syntax.fs import write_json
 from davidkhala.microsoft.purview import Catalog
+
+auth = credentials()
+
+
+class AuthTestCase(unittest.TestCase):
+    def test_auth(self):
+        auth.get_token(*default_scopes)
 
 
 class CatalogTestCase(unittest.TestCase):
 
     def setUp(self):
-        self._catalog = Catalog(credentials())
+        self._catalog = Catalog(auth)
 
     def test_list(self):
         l = self._catalog.assets()
