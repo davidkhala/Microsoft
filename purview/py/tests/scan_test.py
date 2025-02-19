@@ -2,8 +2,7 @@ import unittest
 
 from davidkhala.syntax.fs import write_json
 
-from davidkhala.microsoft.purview import Scan, Source, Run
-
+from davidkhala.microsoft.purview.scan import Scan, Source, Run
 
 class SourceTestCase(unittest.TestCase):
     def setUp(self):
