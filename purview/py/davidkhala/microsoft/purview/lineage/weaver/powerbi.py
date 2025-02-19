@@ -43,6 +43,7 @@ class Builder:
             case 'databricks':
 
                 strategy = self.source['strategy']
+                print(self.source['type'], 'table.count()', tables.__len__())
                 for table in tables:  # Assume they are all databricks tables
                     if strategy == Builder.DatabricksStrategy.Desktop:
                         bi_table = DatabricksTable(table)

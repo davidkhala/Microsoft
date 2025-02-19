@@ -1,9 +1,11 @@
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
 
 
 jobs:
   test:
-    environment: david-khala@hotmail.com
+    environment: kyndryl
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@main
@@ -13,7 +15,11 @@ jobs:
         test-entry-point: pytest
         tests: purview/py/tests
       env:
+        DATABRICKS_HOST: ${{vars.DATABRICKS_HOST}}
+        DATABRICKS_TOKEN: ${{secrets.DATABRICKS_TOKEN}}
         CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+        TENANT_ID: ${{vars.TENANT_ID}}
+        CLIENT_ID: ${{vars.CLIENT_ID}}
   publish:
     runs-on: windows-latest
         
@@ -24,6 +30,14 @@ jobs:
           working-directory: purview/py
       - run: poetry run build
         working-directory: purview/py
+      - run: ./tests/test.ps1
+        working-directory: purview/py
+        env:
+          DATABRICKS_HOST: ${{vars.DATABRICKS_HOST}}
+          DATABRICKS_TOKEN: ${{secrets.DATABRICKS_TOKEN}}
+          CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+          TENANT_ID: ${{vars.TENANT_ID}}
+          CLIENT_ID: ${{vars.CLIENT_ID}}
       - uses: softprops/action-gh-release@master
         with:
           files: |
