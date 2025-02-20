@@ -1,13 +1,12 @@
 from enum import Enum
-
-from azure.identity import DefaultAzureCredential
+from davidkhala.azure.ci import credentials
 from azure.purview.scanning import PurviewScanningClient
 
 
 def get_client(**kwargs):
-    credentials = DefaultAzureCredential()
+    auth = credentials()
     endpoint = "https://api.purview-service.microsoft.com/scan"
-    return PurviewScanningClient(endpoint, credentials, **kwargs)
+    return PurviewScanningClient(endpoint, auth, **kwargs)
 
 
 class Scan:
