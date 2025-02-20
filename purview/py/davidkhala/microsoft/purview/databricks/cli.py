@@ -29,7 +29,8 @@ def rename(workspace: Workspace, credential: TokenCredential):
 def powerbi_dataset_lineage(credential: TokenCredential, target_dataset: str, strategy: Builder.DatabricksStrategy):
     lineage = Lineage(credential)
     adb = Databricks(lineage)
-    dataset = PowerBI(lineage).dataset(name=target_dataset)
+    powerbi = PowerBI(lineage)
+    dataset = powerbi.dataset(name=target_dataset)
     if not dataset:
         raise Exception(f"dataset({target_dataset}) not found")
     builder = Builder()
@@ -68,7 +69,7 @@ def main():
     match args.command:
         case 'rename':
             client = WorkspaceClient(host=getattr(args, 'databricks.host'), token=getattr(args, 'databricks.token'))
-            client.current_user.me() # validate
+            client.current_user.me()  # validate
             rename(Workspace(client), credential)
         case 'lineage':
             strategy = Builder.DatabricksStrategy.Publish
