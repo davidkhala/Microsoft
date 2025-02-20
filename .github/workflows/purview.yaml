@@ -28,6 +28,7 @@ jobs:
       - uses: davidkhala/poetry-buildpack@main
         with:
           working-directory: purview/py
+          version: 3.12
       - run: poetry run build
         shell: bash
         working-directory: purview/py
