@@ -1,6 +1,6 @@
 Describe "cli.exe"{
     BeforeAll{
-        $cliPath = "./dist/cli.exe"
+        $cliPath = "./dist/purview.exe"
     }
     It "cli.exe should exists" {
         Test-Path -Path $cliPath | Should -Be $true

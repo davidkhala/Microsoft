@@ -14,6 +14,7 @@ jobs:
         working-directory: purview/py
         test-entry-point: pytest
         tests: purview/py/tests
+        version: 3.12
       env:
         DATABRICKS_HOST: ${{vars.DATABRICKS_HOST}}
         DATABRICKS_TOKEN: ${{secrets.DATABRICKS_TOKEN}}
@@ -42,6 +43,7 @@ jobs:
           CLIENT_ID: ${{vars.CLIENT_ID}}
       - uses: softprops/action-gh-release@master
         with:
+          tag_name: purview
           files: |
-            purview/py/dist/cli.exe
+            purview/py/dist/purview.exe
           

@@ -1,17 +1,18 @@
 from enum import Enum
-from davidkhala.azure.ci import credentials
+
+from azure.core.credentials import TokenCredential
 from azure.purview.scanning import PurviewScanningClient
 
 
-def get_client(**kwargs):
-    auth = credentials()
-    endpoint = "https://api.purview-service.microsoft.com/scan"
-    return PurviewScanningClient(endpoint, auth, **kwargs)
+class ScanWare:
+    def __init__(self, credential: TokenCredential, **kwargs):
+        endpoint = "https://api.purview-service.microsoft.com/scan"
+        self.client = PurviewScanningClient(endpoint, credential, **kwargs)
 
 
-class Scan:
-    def __init__(self, data_source_name, **kwargs):
-        self.client = get_client(**kwargs)
+class Scan(ScanWare):
+    def __init__(self, credential: TokenCredential, data_source_name):
+        super().__init__(credential)
         self.data_source_name = data_source_name
 
     def ls(self):
@@ -21,9 +22,9 @@ class Scan:
         return self.client.filters.get(self.data_source_name, scan_name)
 
 
-class Run:
-    def __init__(self, data_source_name, scan_name, **kwargs):
-        self.client = get_client(**kwargs)
+class Run(ScanWare):
+    def __init__(self, credential: TokenCredential, data_source_name, scan_name):
+        super().__init__(credential)
         self.data_source_name = data_source_name
         self.scan_name = scan_name
 
@@ -84,9 +85,7 @@ class Run:
         return Run.get_id(receipt)
 
 
-class Source:
-    def __init__(self, **kwargs):
-        self.client = get_client(**kwargs)
+class Source(ScanWare):
 
     def get(self, data_source_name):
         return self.client.data_sources.get(data_source_name)

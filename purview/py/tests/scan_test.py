@@ -1,18 +1,22 @@
 import unittest
 
+from davidkhala.azure.ci import credentials
 from davidkhala.syntax.fs import write_json
 
 from davidkhala.microsoft.purview.scan import Scan, Source, Run
 
+auth = credentials()
+
+
 class SourceTestCase(unittest.TestCase):
     def setUp(self):
-        self.source = Source()
+        self.source = Source(auth)
 
     def test_get_source(self):
         name = 'Fabric-AppTeam'
         _source = self.source.get(name)
         self.assertEqual(_source.get('name'), name)
-        scan = Scan(name)
+        scan = Scan(auth, name)
         _scans = scan.ls()
         print(_scans)
 
@@ -24,7 +28,7 @@ class SourceTestCase(unittest.TestCase):
 class ScanTestCase(unittest.TestCase):
     def setUp(self):
         name = 'AzureDatabricks'
-        self.scan = Scan(name)
+        self.scan = Scan(auth, name)
 
     def test_list_scans(self):
         for scan in self.scan.ls():
@@ -39,7 +43,7 @@ class RunTestCase(unittest.TestCase):
     def setUp(self):
         data_source_name = 'AzureDatabricks'
         scan_name = 'Scan'
-        self.run = Run(data_source_name, scan_name)
+        self.run = Run(auth, data_source_name, scan_name)
 
     def test_dry_run(self):
         run_id = self.run.start(wait_until_success=False)

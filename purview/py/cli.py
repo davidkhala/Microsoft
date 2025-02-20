@@ -9,6 +9,7 @@ i = Installer(os.path.join(_current, 'dist'), source)
 
 
 def build():
+    i.name = 'purview'
     r = i.build()
     print(" ".join(r.args)) # raw command
 
