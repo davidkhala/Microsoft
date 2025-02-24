@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "davidkhala.microsoft.fabric"
+version = "0.0.0"
+description = ""
+authors = ["david-khala@hotmail.com"]
+readme = "README.md"
+packages = [{ include = "davidkhala" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12, <4.0"
+azure-mgmt-fabric = "*"
+[tool.poetry.group.dev.dependencies]
+davidkhala-azure = "*"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
