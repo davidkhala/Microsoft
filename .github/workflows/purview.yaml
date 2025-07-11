@@ -5,11 +5,11 @@ on:
 
 jobs:
   test:
-    environment: kyndryl
+    environment: david-khala@hotmail.com
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@main
-    - uses: davidkhala/poetry-buildpack@main
+    - uses: davidkhala/uv-buildpack@main
       with:
         working-directory: purview/py
         test-entry-point: pytest
@@ -23,14 +23,14 @@ jobs:
         CLIENT_ID: ${{vars.CLIENT_ID}}
   publish:
     runs-on: windows-latest
-        
+    environment: david-khala@hotmail.com
     steps:
       - uses: actions/checkout@main
-      - uses: davidkhala/poetry-buildpack@main
+      - uses: davidkhala/uv-buildpack@main
         with:
           working-directory: purview/py
           version: 3.12
-      - run: poetry run build
+      - run: uv run build
         shell: bash
         working-directory: purview/py
       - run: ./tests/test.ps1
