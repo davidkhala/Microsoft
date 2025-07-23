@@ -1,4 +1,3 @@
-[AD](https://github.com/davidkhala/login/wiki/Active-Directory-(AD))
 # MicroSoft Entra
 
 The new unified IAM
