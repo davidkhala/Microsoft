@@ -1,8 +1,8 @@
-# Item Permission: grant access to individual warehouses
-
 # Data protection security: fine-grained grant access
-
+- aka. granular warehouse permissions
+- connection: applied to warehouses using the SQL analytics endpoint
 - powered by T-SQL
+- DCL: `GRANT`|`REVOKE`|`DENY`
 - target
   - data object
   - column-level security

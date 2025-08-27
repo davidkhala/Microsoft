@@ -1,0 +1,22 @@
+on:
+  workflow_dispatch:
+  push:
+
+
+jobs:
+  test:
+    environment: david-khala@hotmail.com
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - uses: davidkhala/uv-buildpack@main
+      with:
+        working-directory: fabric/py
+        test-entry-point: pytest
+        tests: fabric/py/tests
+      env:
+        CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+        TENANT_ID: ${{vars.TENANT_ID}}
+        CLIENT_ID: ${{vars.CLIENT_ID}}
+  
+          

@@ -10,3 +10,7 @@ OneLake is the OneDrive for data
 
 **Shortcuts** allow you to quickly source your existing cloud data without having to copy it
 - target: ADLS Gen2, OneLake
+# Permission
+
+## OneLake data access roles
+- aka. OneLake RBAC

@@ -16,6 +16,7 @@ allows you to create views, functions, stored procedures and to apply SQL securi
 - aka. **SQL analytics endpoint** experience, **Data explorer** pane
 - similar to Databricks Warehouse `http_path`
 - View **Tables**: enable Row-level security, column-level security, and dynamic data masking
+  - similar to [granular warehouse permissions](./warehouse/security.md#data-protection-security-fine-grained-grant-access)
 
 
 ### Table

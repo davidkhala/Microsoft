@@ -10,11 +10,10 @@
 
 build blocks
 
-- Workspace roles
-- Item permissions
+- [Workspace roles](./workspace.md#workspace-roles)
+- [Item permissions](./workspace.md#item-permissions)
   - Item in Lakehouse | Warehouse | Semantic model
-  - permission type: (`Read` | `ReadData`|`R`)
 - Compute or granular permissions
-  - compute engine like SQL Endpoint | Semantic model
-- OneLake data access controls (a RBAC)
+  - compute engine like [SQL Endpoint](./warehouse/security.md) | Semantic model
+- [OneLake data access controls](./OneLake.md#onelake-data-access-roles)
   - targeting files or folders
