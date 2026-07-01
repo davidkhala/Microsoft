@@ -1,0 +1,46 @@
+services:
+  sharepoint-connector:
+    build: .
+    container_name: sharepoint-connector
+    ports:
+      - "8000"
+    environment:
+      # SharePoint Configuration
+      - SHAREPOINT_CLIENT_ID=${SHAREPOINT_CLIENT_ID}
+      - SHAREPOINT_CLIENT_SECRET=${SHAREPOINT_CLIENT_SECRET}
+      - SHAREPOINT_TENANT_ID=${SHAREPOINT_TENANT_ID}
+      - SHAREPOINT_SITE_URL=${SHAREPOINT_SITE_URL}
+      # Storage backend selection: cos or s3
+      - STORAGE_BACKEND=${STORAGE_BACKEND:-cos}
+      # IBM COS Configuration (if STORAGE_BACKEND=cos)
+      - COS_API_KEY=${COS_API_KEY}
+      - COS_ENDPOINT=${COS_ENDPOINT}
+      - COS_BUCKET_NAME=${COS_BUCKET_NAME}
+      - COS_INSTANCE_CRN=${COS_INSTANCE_CRN:-}
+      # S3 Configuration (if STORAGE_BACKEND=s3)
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:-}
+      - S3_SECRET_KEY=${S3_SECRET_KEY:-}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME:-}
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-}
+      - S3_REGION=${S3_REGION:-us-east-1}
+    command: >
+      python main.py
+      --sharepoint-client-id ${SHAREPOINT_CLIENT_ID}
+      --sharepoint-client-secret ${SHAREPOINT_CLIENT_SECRET}
+      --sharepoint-tenant-id ${SHAREPOINT_TENANT_ID}
+      --sharepoint-site-url ${SHAREPOINT_SITE_URL}
+      --storage-backend ${STORAGE_BACKEND:-cos}
+      --cos-api-key ${COS_API_KEY}
+      --cos-endpoint ${COS_ENDPOINT}
+      --cos-bucket-name ${COS_BUCKET_NAME}
+      --cos-instance-crn ${COS_INSTANCE_CRN:-}
+      --s3-access-key-id ${S3_ACCESS_KEY_ID:-}
+      --s3-secret-key ${S3_SECRET_KEY:-}
+      --s3-bucket-name ${S3_BUCKET_NAME:-}
+      --s3-endpoint-url ${S3_ENDPOINT_URL:-}
+      --s3-region ${S3_REGION:-us-east-1}
+      --port 8000
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+
