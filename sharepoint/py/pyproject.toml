@@ -1,26 +1,13 @@
 [project]
-name = "davidkhala.sharepoint.sink.object-storage"
+name = "davidkhala.sharepoint"
 version = "0.0.0"
-description = "SharePoint to s3 Connector - Transfer files from SharePoint to various object storage"
+description = "Microsoft SharePoint"
 authors = [{ name = "David Liu" }]
 requires-python = ">=3.10"
 readme = "README.md"
 dependencies = [
-    "fastapi",
-    "uvicorn[standard]",
-    "davidkhala.utils[http_request]",
-    "pydantic",
+    "office365-rest-python-client",
 ]
-
-[project.optional-dependencies]
-cos = [
-    "ibm-cos-sdk",
-    "ibm_boto3",
-]
-s3 = [
-    "boto3",
-]
-
 
 [dependency-groups]
 dev = [

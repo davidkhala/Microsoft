@@ -1,3 +1,4 @@
+name: sharepoint
 on:
   workflow_dispatch:
   push:
@@ -5,18 +6,16 @@ on:
 
 jobs:
   test:
-    environment: david-khala@hotmail.com
+    environment: sharepoint client
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@main
     - uses: davidkhala/uv-buildpack@main
       with:
-        working-directory: fabric/py
-        tests: fabric/py/tests
+        working-directory: sharepoint/py
+        tests: sharepoint/py/tests
         test-entry-point: pytest
       env:
         CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
         TENANT_ID: ${{vars.TENANT_ID}}
         CLIENT_ID: ${{vars.CLIENT_ID}}
-  
-          

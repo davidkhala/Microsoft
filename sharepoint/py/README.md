@@ -72,22 +72,6 @@ A Python server that transfers files from SharePoint to various storage backends
    - **Secret Access Key** → `--s3-secret-key`
    - **Bucket Name** → `--s3-bucket-name`
 
-## Installation
-
-```bash
-# Install with core dependencies only
-uv sync
-
-# Install with IBM COS support
-uv sync --extra cos
-
-# Install with S3 support
-uv sync --extra s3
-
-# Install with all backends
-uv sync --extra all
-```
-
 ## Usage
 
 ### Start with IBM COS
