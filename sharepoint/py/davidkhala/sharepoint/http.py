@@ -23,16 +23,14 @@ class Graph(Request):
         url = f"https://graph.microsoft.com/v1.0/sites/{site}/drives/{drive}/root:/{path}"
         return self.request(url, method="GET")
 
-    def get_item_id(self, site: str, drive: str, path: str) -> str:
-        return self.get_item(site, drive, path)['id']
-
-    def stream(self, site: str, drive: str, path: str) -> HTTPResponse:
+    def read_stream(self, site: str, drive: str, path: str) -> HTTPResponse:
         """
         Expect session open before stream
         Expect session close after stream
         """
-        _id = self.get_item_id(site, drive, path)
+        item = self.get_item(site, drive, path)['id']
+
         req = StreamRequest(self)
-        url = f"https://graph.microsoft.com/v1.0/sites/{site}/drives/{drive}/items/{_id}/content"
+        url = f"https://graph.microsoft.com/v1.0/sites/{site}/drives/{drive}/items/{item}/content"
         resp = req.request(url, "GET")
         return resp.raw
