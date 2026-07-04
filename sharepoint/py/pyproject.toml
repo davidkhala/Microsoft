@@ -1,12 +1,13 @@
 [project]
 name = "davidkhala.sharepoint"
-version = "0.0.0"
+version = "0.0.1"
 description = "Microsoft SharePoint"
 authors = [{ name = "David Liu" }]
 requires-python = ">=3.10"
 readme = "README.md"
 dependencies = [
     "office365-rest-python-client",
+    "davidkhala.utils",
 ]
 
 [dependency-groups]
