@@ -1,8 +1,10 @@
+from os import PathLike
 from typing import Callable, Any
 
 from office365.onedrive.driveitems.driveItem import DriveItem
 from office365.onedrive.drives.drive import Drive as RawDrive
 import requests
+from davidkhala.utils.syntax.fs import write
 
 
 def recurse(item: DriveItem, prefix="", output_func: Callable[[str], Any] = print):
@@ -33,13 +35,11 @@ class Drive:
     def tree(self, prefix=""):
         recurse(self._.root.get().execute_query(), f"{prefix}{self.name}")
 
-    def download(self, relative_path: str):
+    def download(self, relative_path: str, sink: PathLike):
         item = self._.root.get_by_path(relative_path).get().execute_query()
 
         download_url = item.properties.get(
             "@microsoft.graph.downloadUrl"
         )
         r = requests.get(download_url)
-
-        with open(item.properties.get('name'), "wb") as f:
-            f.write(r.content)
+        write(sink, r.content, mode='wb')

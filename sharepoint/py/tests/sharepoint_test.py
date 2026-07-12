@@ -1,5 +1,6 @@
 import os
 import unittest
+from pathlib import Path
 
 from davidkhala.sharepoint import Graph
 from davidkhala.sharepoint.drive import Drive
@@ -49,7 +50,8 @@ class DriveTestCase(GraphClientTestCase):
         self.assertEqual("Documents", self.drive.name)
 
     def test_download(self):
-        self.drive.download("temp/dummy.txt")
+        sink = Path(__file__).parent / "artifacts" /'new-layer'/ "dummy.txt"
+        self.drive.download("temp/dummy.txt", sink)
 
     def test_files(self):
         self.drive.tree()

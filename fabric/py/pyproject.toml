@@ -8,7 +8,7 @@ readme = "README.md"
 dependencies = ["azure-mgmt-fabric"]
 
 [dependency-groups]
-dev = ["davidkhala-azure"]
+dev = ["pytest", "davidkhala-azure"]
 
 [tool.hatch.build.targets.sdist]
 include = ["davidkhala"]
