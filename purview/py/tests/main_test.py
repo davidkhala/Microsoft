@@ -2,7 +2,7 @@ import unittest
 
 from davidkhala.azure import default_scopes
 from davidkhala.azure.ci import credentials
-from davidkhala.syntax.fs import write_json
+from davidkhala.utils.syntax.fs import write_json
 from davidkhala.microsoft.purview import Catalog
 
 auth = credentials()

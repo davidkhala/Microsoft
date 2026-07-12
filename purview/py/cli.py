@@ -1,11 +1,9 @@
-import os.path
+from pathlib import Path
 
-from davidkhala.build import Installer
-from davidkhala.syntax.path import dirname
+from davidkhala.utils.build import Installer
 
-_current = dirname(__file__)
-source = os.path.join(_current, "davidkhala/microsoft/purview/databricks/cli.py")
-i = Installer(os.path.join(_current, 'dist'), source)
+source = Path(__file__).parent / "davidkhala/microsoft/purview/databricks/cli.py"
+i = Installer(str(Path(__file__).parent / 'dist'),   str(source))
 
 
 def build():

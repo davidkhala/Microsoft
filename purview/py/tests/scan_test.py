@@ -1,7 +1,7 @@
 import unittest
 
 from davidkhala.azure.ci import credentials
-from davidkhala.syntax.fs import write_json
+from davidkhala.utils.syntax.fs import write_json
 
 from davidkhala.microsoft.purview.scan import Scan, Source, Run
 
