@@ -13,36 +13,32 @@ class SourceTestCase(unittest.TestCase):
         self.source = Source(auth)
 
     def test_get_source(self):
-        name = 'Fabric-AppTeam'
+        name = 'Fabric'
         _source = self.source.get(name)
         self.assertEqual(_source.get('name'), name)
-        scan = Scan(auth, name)
-        _scans = scan.ls()
-        print(_scans)
 
     def test_list_sources(self):
         sources = self.source.ls()
         print(sources)
+        print(self.source.names)
 
 
 class ScanTestCase(unittest.TestCase):
     def setUp(self):
-        name = 'AzureDatabricks'
+        name = 'Fabric'
         self.scan = Scan(auth, name)
 
     def test_list_scans(self):
         for scan in self.scan.ls():
-            print(scan.get('name'))
-
-    def test_filter(self):
-        r = self.scan.scope('Scan')
-        write_json(r, 'filters')
+            name = scan.get('name')
+            r = self.scan.scope(name)
+            write_json(r, 'filters')
 
 
 class RunTestCase(unittest.TestCase):
     def setUp(self):
-        data_source_name = 'AzureDatabricks'
-        scan_name = 'Scan'
+        data_source_name = 'Fabric'
+        scan_name = 'Scan-shared-only'
         self.run = Run(auth, data_source_name, scan_name)
 
     def test_dry_run(self):
@@ -57,7 +53,6 @@ class RunTestCase(unittest.TestCase):
     def test_run(self):
         """
         This will last for > 3 minutes
-        :return:
         """
         self.run.start(wait_until_success=True)
 

@@ -1,3 +1,4 @@
+name: fabric
 on:
   workflow_dispatch:
   push:

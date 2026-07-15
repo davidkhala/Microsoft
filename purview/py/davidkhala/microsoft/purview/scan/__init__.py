@@ -93,5 +93,9 @@ class Source(ScanWare):
     def ls(self):
         return list(self.client.data_sources.list_all())
 
+    @property
+    def names(self):
+        return [_['name'] for _ in self.ls()]
+
     def rm(self, data_source_name):
         return self.client.data_sources.delete(data_source_name)
