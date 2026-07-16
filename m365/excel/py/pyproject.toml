@@ -1,0 +1,28 @@
+[project]
+name = "davidkhala.microsoft.excel"
+version = "0.0.0"
+authors = [{ name = "David Liu" }]
+requires-python = ">=3.10"
+readme = "README.md"
+
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
+[project.optional-dependencies]
+raw = ["openpyxl"]
+rust = ["python-calamine"]
+
+
+[tool.hatch.build.targets.sdist]
+include = ["davidkhala"]
+
+[tool.hatch.build.targets.wheel]
+include = ["davidkhala"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
