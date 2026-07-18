@@ -22,9 +22,8 @@ class DatabricksTestcase(unittest.TestCase):
         else:
             w = Workspace.from_local()
         rename(w, auth)
-    @skip
     def test_powerbi_dataset_lineage_desktop(self):
-        target_dataset = 'nyctlc'
+        target_dataset = 'databricks-desktop'
         powerbi_dataset_lineage(auth, target_dataset, Builder.DatabricksStrategy.Desktop)
     @skip
     def test_powerbi_dataset_lineage_publish(self):

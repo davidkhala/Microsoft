@@ -37,14 +37,15 @@ You can assign Purview's SAMI to Azure Subscription level `Access Control (IAM)`
 ## Azure Databricks
 It requires
 - **Credential**, supported by Purview Vault 
-  - Purview's SAMI should have access to write secret in Azure KeyVault.
+  - Purview's SAMI should have access to read secret in Azure KeyVault.
+    - Azure RBAC (IAM) role assignment: `Key Vault Secrets User` 
   - https://github.com/davidkhala/azure-utils/tree/main/vault#permission
 - **HTTP Path** of SQL warehouse
 
 ### Azure Databricks Unity Catalog
 It requires
-- **Workspace URL** (e.g. `adb-2367537008441771.11.azuredatabricks.net` )
-- **HTTP Path** of SQL warehouse
+- **Metastore ID**
+
 
 
 
