@@ -72,7 +72,7 @@ describe('data map', function () {
         console.debug(r)
     })
     it('entity get by attrs', async () => {
-        const fullName = 'mssql://always-free.database.windows.net/app-kyndryl-hk/SalesLT/vProductAndDescription'
+        const fullName = 'mssql://sql-server-hk.database.windows.net/mssql/SalesLT/vProductAndDescription'
         const entity = await dataMap.entityGet(view, fullName)
 
         const sources = entity.upstream_relations
