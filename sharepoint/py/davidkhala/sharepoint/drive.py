@@ -33,10 +33,16 @@ class Drive:
         return self._.name
 
     def tree(self, prefix=""):
-        recurse(self._.root.get().execute_query(), f"{prefix}{self.name}")
+        recurse(self.get(), f"{prefix}{self.name}")
+
+    def get(self, path="") -> DriveItem:
+        if not path:
+            return self._.root.get().execute_query()
+        else:
+            return self._.root.get_by_path(path).get().execute_query()
 
     def download(self, relative_path: str, sink: PathLike):
-        item = self._.root.get_by_path(relative_path).get().execute_query()
+        item = self.get(relative_path)
 
         download_url = item.properties.get(
             "@microsoft.graph.downloadUrl"
