@@ -44,8 +44,10 @@ class Drive:
     def download(self, relative_path: str, sink: PathLike):
         item = self.get(relative_path)
 
-        download_url = item.properties.get(
-            "@microsoft.graph.downloadUrl"
-        )
+        download_url = item.properties.get("@microsoft.graph.downloadUrl")
         r = requests.get(download_url)
         write(sink, r.content, mode='wb')
+
+    def upload(self, source: PathLike, sink_dir="") -> DriveItem:
+        item = self.get(sink_dir)
+        return item.upload_file(source).execute_query()

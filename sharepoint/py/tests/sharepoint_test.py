@@ -50,9 +50,17 @@ class DriveTestCase(GraphClientTestCase):
         self.assertEqual("Documents", self.drive.name)
 
     def test_download(self):
-        sink = Path(__file__).parent / "artifacts" /'new-layer'/ "dummy.txt"
-        self.drive.download("temp/dummy.txt", sink)
+        sink = Path(__file__).parent / "artifacts" / 'FileList_GPD_DataIssue.txt'
+        self.drive.download("temp/FileList_GPD_DataIssue.txt", sink)
 
+    def test_upload_txt(self):
+        source = Path(__file__).parent / "fixtures" / "FileList_GPD_DataIssue.txt"
+        r = self.drive.upload(source, "temp")
+        print(r.to_json())
+    def test_upload_csv(self):
+        source = Path(__file__).parent / "fixtures" / "GPD_DataIssue_2025.csv"
+        r = self.drive.upload(source, "temp")
+        print(r.to_json())
     def test_files(self):
         self.drive.tree()
 
