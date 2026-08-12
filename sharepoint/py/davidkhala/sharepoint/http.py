@@ -33,4 +33,5 @@ class Graph(Request):
         req = StreamRequest(self)
         url = f"https://graph.microsoft.com/v1.0/sites/{site}/drives/{drive}/items/{item}/content"
         resp = req.request(url, "GET")
+        resp.raw.decode_content = True
         return resp.raw
