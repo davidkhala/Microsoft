@@ -30,16 +30,17 @@ class Graph(Request):
             if err.response is not None and err.response.status_code == 404:
                 return None
             raise
-
-    def read_stream(self, site: str, drive: str, path: str) -> HTTPResponse:
+    def read_stream_by(self, site: str, drive: str, item_id: str) -> HTTPResponse:
         """
         Expect session open before stream
         Expect session close after stream
         """
-        item = self.get_item(site, drive, path)['id']
-
         req = StreamRequest(self)
-        url = f"https://graph.microsoft.com/v1.0/sites/{site}/drives/{drive}/items/{item}/content"
+        url = f"https://graph.microsoft.com/v1.0/sites/{site}/drives/{drive}/items/{item_id}/content"
         resp = req.request(url, "GET")
         resp.raw.decode_content = True
         return resp.raw
+    def read_stream(self, site: str, drive: str, path: str) -> HTTPResponse:
+
+        item = self.get_item(site, drive, path)['id']
+        return self.read_stream_by(site, drive, item)

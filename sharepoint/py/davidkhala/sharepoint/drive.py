@@ -3,6 +3,7 @@ from typing import Callable, Any
 
 from office365.onedrive.driveitems.driveItem import DriveItem
 from office365.onedrive.drives.drive import Drive as RawDrive
+from office365.runtime.client_request_exception import ClientRequestException
 import requests
 from davidkhala.utils.syntax.fs import write
 
@@ -14,7 +15,12 @@ def recurse(item: DriveItem, prefix="", output_func: Callable[[str], Any] = prin
         if child.is_folder:
             new_prefix = f"{prefix}/{child.name}"
             output_func(new_prefix + "/")
-            recurse(child, new_prefix)
+            try:
+                recurse(child, new_prefix)
+            except ClientRequestException as e:
+                if e.code != "BadRequest":
+                    # Known issue: SharePoint 中 Viva Engage 会在 Documents 库里创建特殊的隐藏文件夹，这类文件夹在 SDK 的 children 列表里可见（is_folder=True），但实际去读取其子项时 Graph API 会拒绝。
+                    raise
         else:
             output_func(f"{prefix}/{child.name}")
 
