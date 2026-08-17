@@ -79,7 +79,12 @@ class HTTPTestCase(unittest.TestCase):
 
         r = self.client.get_item(site, drive, 'temp/dummy.txt')
         self.assertEqual('01GJ54VSTFVTWRRKW4LBCZQO76GZJXPFAW', r['id'])
+    def test_exist(self):
+        site = 'davidkhalahotmail.sharepoint.com,3f75f1a6-1239-4862-b14d-367c1c865604,d786840e-231b-4b8a-b38a-19e174ebb25d'
+        drive = 'b!pvF1PzkSYkixTTZ8HIZWBA6EhtcbI4pLs4oZ4XTrsl1HYF74jUSjSr-0WF8hBZy5'
 
+        self.assertIsNotNone(self.client.exist(site, drive, 'temp/dummy.txt'))
+        self.assertIsNone(self.client.exist(site, drive, 'temp/noexist.txt'))
     def test_stream_item(self):
         site = 'davidkhalahotmail.sharepoint.com,3f75f1a6-1239-4862-b14d-367c1c865604,d786840e-231b-4b8a-b38a-19e174ebb25d'
         drive = 'b!pvF1PzkSYkixTTZ8HIZWBA6EhtcbI4pLs4oZ4XTrsl1HYF74jUSjSr-0WF8hBZy5'

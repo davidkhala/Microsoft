@@ -1,5 +1,6 @@
 from davidkhala.utils.http_request import Request
 from davidkhala.utils.http_request.stream import Request as StreamRequest
+from requests.exceptions import HTTPError
 from urllib3 import HTTPResponse
 
 
@@ -22,6 +23,13 @@ class Graph(Request):
     def get_item(self, site: str, drive: str, path: str):
         url = f"https://graph.microsoft.com/v1.0/sites/{site}/drives/{drive}/root:/{path}"
         return self.request(url, method="GET")
+    def exist(self, site: str, drive: str, path: str):
+        try:
+            return self.get_item(site, drive, path)
+        except HTTPError as err:
+            if err.response is not None and err.response.status_code == 404:
+                return None
+            raise
 
     def read_stream(self, site: str, drive: str, path: str) -> HTTPResponse:
         """
