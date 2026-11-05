@@ -10,6 +10,4 @@ An app package is a zip file that has the required resources to install and run 
 
 Microsoft 365 Agents toolkit
 
-
 [Developer Portal for Teams](https://dev.teams.microsoft.com/home) (aka. App Studio)
-    
